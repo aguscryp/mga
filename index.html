@@ -79,7 +79,6 @@
     #main-content { display: none; height: 100vh; overflow-y: auto; position: relative; z-index: 5; }
     .shell { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
 
-    /* TOPBAR & MENU */
     .topbar { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
     .menu-btn {
       display: flex; align-items: center; gap: 10px; padding: 12px 20px;
@@ -90,7 +89,6 @@
       position: absolute; top: 100px; left: 20px; width: 220px;
       background: rgba(18,24,33,0.98); border: var(--border-1); border-radius: 16px;
       padding: 10px; backdrop-filter: var(--blur-1); display: none; z-index: 100;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
     .menu-panel.open { display: block; }
     .menu-item {
@@ -99,7 +97,6 @@
     }
     .menu-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-    /* CARDS */
     .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
     .card {
       grid-column: span 12; position: relative; border-radius: 22px; border: var(--border-1);
@@ -171,7 +168,7 @@
           MENÚ
         </button>
         <div class="menu-panel" id="menu-panel">
-          <a href="index.html" class="menu-item">Inicio</a>
+          <a href="#" class="menu-item" onclick="location.reload()">Inicio</a>
           <a href="support.html" class="menu-item">Soporte</a>
           <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
           <a href="#" class="menu-item" onclick="logout()" style="color:#ff6b6b;">Cerrar Sesión</a>
@@ -188,7 +185,7 @@
           <div class="card-content">
             <div>
               <h2 class="card-title">MASTER GRAND</h2>
-              <p class="card-desc">Ambiente de alto nivel diseñado para escalar tus ingresos por encima de los $1,000 USD.</p>
+              <p class="card-desc">Buscá la forma de aprender en este ambiente que te va a llevar a ganar más de $1,000 USD.</p>
             </div>
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#9ec7ff" stroke-width="2"><path d="M3 18h18l-2-9-5 3-4-6-5 6-2 6Z"/></svg>
@@ -204,7 +201,7 @@
           <div class="card-content">
             <div>
               <h2 class="card-title">SETTER PROFESIÓN</h2>
-              <p class="card-desc">Domina la habilidad de prospección y genera más de $2,000 USD mensuales.</p>
+              <p class="card-desc">Aprendé a generar más de $2,000 USD con la habilidad de setting dentro de la empresa.</p>
             </div>
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#9ef1ff" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#9ef1ff" fill-opacity="0.3"/></svg>
@@ -220,7 +217,7 @@
           <div class="card-content">
             <div>
               <h2 class="card-title">PUESTOS LABORALES</h2>
-              <p class="card-desc">Explora las +27 oportunidades de carrera dentro de la red de MGA.</p>
+              <p class="card-desc">Mirá todos los posibles +27 puestos laborales que MGA puede ofrecerte.</p>
             </div>
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#d8b3ff" stroke-width="2"><path d="M9 6h6l1 2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3l1-2Z"/></svg>
@@ -236,7 +233,7 @@
           <div class="card-content">
             <div>
               <h2 class="card-title">SISTEMA DE ECONOMÍA</h2>
-              <p class="card-desc">Estrategias profesionales de gestión financiera y prospección avanzada.</p>
+              <p class="card-desc">Aprendé el método de prospección profesional para generar ingresos mensuales altos.</p>
             </div>
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#8fffd6" stroke-width="2"><circle cx="12" cy="12" r="6"/><path d="M3 12c3-4 18-4 21 0-3 4-18 4-21 0Z"/></svg>
@@ -252,19 +249,35 @@
   </div>
 
   <script>
-    /* USUARIOS AUTORIZADOS */
+    /* -----------------------------------------------------------
+       CONFIGURACIÓN DE USUARIOS
+    ----------------------------------------------------------- */
+    
+    // USUARIOS ACTIVOS
     const DATABASE = {
-      "admin": "mga123",
       "maiten": "mga",
       "agus": "123455",
       "maria234": "mga"
     };
+
+    // USUARIOS SUSPENDIDOS
+    const SUSPENDIDOS = [
+      "admin",
+      "usuario_ejemplo"
+    ];
 
     function checkAuth() {
       const u = document.getElementById('u-in').value.trim().toLowerCase();
       const p = document.getElementById('p-in').value.trim();
       const err = document.getElementById('error-msg');
 
+      // 1. Validar si está en la lista de suspendidos
+      if (SUSPENDIDOS.includes(u)) {
+        alert("Tu usuario esta suspendido por motivos serios administrativos , porfavor para revivir tu usuario tienes que contactarte nuevamente con tu anfitrion enlazado a MGA. ¡Nos vemos pronto!");
+        return;
+      }
+
+      // 2. Validar credenciales
       if (DATABASE[u] && DATABASE[u] === p) {
         sessionStorage.setItem('mga_verified', 'true');
         sessionStorage.setItem('mga_user', u);
@@ -275,6 +288,9 @@
       }
     }
 
+    /* -----------------------------------------------------------
+       LÓGICA DE INTERFAZ Y ANIMACIONES
+    ----------------------------------------------------------- */
     function startLoader() {
       document.getElementById('lock-screen').style.display = 'none';
       const loader = document.getElementById('loader');
@@ -317,7 +333,7 @@
     window.onclick = () => document.getElementById('menu-panel').classList.remove('open');
     if(sessionStorage.getItem('mga_verified')) launchApp();
 
-    /* ESTRELLAS ANIMADAS */
+    /* FONDO DE ESTRELLAS */
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
