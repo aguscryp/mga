@@ -1,1 +1,156 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MGA — Master Classes</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
+  <style>
+    :root {
+      --bg-0: #05070a;
+      --card-bg: #0f141b;
+      --text-0: #e8eef7;
+      --text-1: #b9c3d3;
+      --accent: #64b4ff;
+      --border-1: 1px solid rgba(255,255,255,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg-0); color: var(--text-0); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+    #bg-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+    .shell { position: relative; z-index: 10; max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+    /* Navegación */
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px;
+      background: rgba(255,255,255,0.03); border: var(--border-1); border-radius: 14px;
+      color: var(--text-1); cursor: pointer; font-weight: 700; font-size: 13px;
+      text-transform: uppercase; text-decoration: none; transition: 0.3s;
+    }
+    .btn-back:hover { background: rgba(255,255,255,0.08); color: #fff; transform: translateX(-5px); }
+
+    .header { margin-bottom: 50px; }
+    .header h1 {
+      font-size: clamp(32px, 5vw, 42px); font-weight: 800; margin: 0;
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+      -webkit-background-clip: text; color: transparent;
+    }
+
+    /* FEED DE VIDEOS */
+    #video-feed { display: flex; flex-direction: column; gap: 50px; }
+
+    .class-card {
+      background: var(--card-bg); border: var(--border-1); border-radius: 28px;
+      overflow: hidden; transition: 0.4s ease;
+    }
+    .class-card:hover { border-color: rgba(100, 180, 255, 0.3); }
+
+    .video-container {
+      position: relative; width: 100%; padding-top: 56.25%; background: #000;
+    }
+    .video-container iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+    }
+
+    .class-info { padding: 30px; }
+    .class-info h2 { margin: 0 0 12px; font-size: 24px; font-weight: 800; color: #fff; }
+    .class-info p { margin: 0; color: var(--text-1); font-size: 15px; line-height: 1.7; opacity: 0.9; }
+
+    .badge {
+      display: inline-block; padding: 5px 12px; background: rgba(100, 180, 255, 0.1);
+      color: var(--accent); border-radius: 8px; font-size: 11px; font-weight: 800;
+      text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px;
+    }
+
+    footer { margin-top: 80px; text-align: center; opacity: 0.2; font-size: 11px; padding-bottom: 40px; }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <main class="shell">
+    <nav class="back-nav">
+      <a href="index.html" class="btn-back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        VOLVER
+      </a>
+    </nav>
+
+    <header class="header">
+      <h1>Master Classes MGA</h1>
+      <p style="color: var(--text-1)">Formación estratégica para setters de élite.</p>
+    </header>
+
+    <div id="video-feed"></div>
+
+    <footer>MGA GLOBAL ACADEMY © 2025</footer>
+  </main>
+
+  <script>
+    // ==========================================
+    // AGREGAR CLASES AQUÍ ABAJO
+    // ==========================================
+    const CLASES_MGA = [
+      {
+        titulo: "Como ser un setter en 2025",
+        link: "https://drive.google.com/file/d/1INoY9FamILYebME-lsFJ4HzKZiLWaLNM/preview",
+        descripcion: "Te explico a brevedad como ser un setter en 2025 desde tu celular.",
+        categoria: "Iniciación"
+      },
+      /* Para agregar otra clase, copia lo de arriba y pégalo aquí abajo separado por una coma.
+      Ejemplo:
+      {
+        titulo: "Título de la Clase 2",
+        link: "LINK_DE_DRIVE_TERMINADO_EN_PREVIEW",
+        descripcion: "Descripción de la clase...",
+        categoria: "Estrategia"
+      },
+      */
+    ];
+    // ==========================================
+
+    // Seguridad
+    if (!sessionStorage.getItem('mga_verified')) { window.location.href = 'index.html'; }
+
+    // Generador dinámico de contenido
+    const feed = document.getElementById('video-feed');
+    
+    CLASES_MGA.forEach(clase => {
+      const card = document.createElement('article');
+      card.className = 'class-card';
+      card.innerHTML = `
+        <div class="video-container">
+          <iframe src="${clase.link}" allow="autoplay" allowfullscreen></iframe>
+        </div>
+        <div class="class-info">
+          <span class="badge">${clase.categoria}</span>
+          <h2>${clase.titulo}</h2>
+          <p>${clase.descripcion}</p>
+        </div>
+      `;
+      feed.appendChild(card);
+    });
+
+    // Fondo Animado
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    function setup() {
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      stars = [];
+      for(let i=0; i<150; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5, v: Math.random()*0.2});
+    }
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(255,255,255,0.1)";
+      stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill(); s.y -= s.v; if(s.y < 0) s.y = canvas.height; });
+      requestAnimationFrame(draw);
+    }
+    window.onresize = setup; setup(); draw();
+  </script>
+</body>
+</html>
