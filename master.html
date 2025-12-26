@@ -17,7 +17,6 @@
       --accent: #64b4ff;
       --success: #00ffaa;
       --border-1: 1px solid rgba(255,255,255,0.08);
-      --blur-1: saturate(160%) blur(15px);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -26,7 +25,7 @@
     #bg-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
     .shell { position: relative; z-index: 10; max-width: 900px; margin: 0 auto; padding: 40px 20px; }
 
-    /* --- BOTÓN VOLVER (IGUAL A SUPPORT) --- */
+    /* --- BOTÓN VOLVER (ESTILO SUPPORT) --- */
     .back-nav { margin-bottom: 25px; }
     .btn-back {
       display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px;
@@ -56,25 +55,43 @@
     .class-card { background: var(--card-bg); border: var(--border-1); border-radius: 28px; overflow: hidden; transition: 0.4s ease; }
     .class-card.completed { border-color: var(--success); }
 
-    /* --- CAPTION MGA (PORTADA) --- */
+    /* --- PORTADA MGA (MINIATURA COHERENTE) --- */
     .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; cursor: pointer; }
     .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
     
     .video-caption {
       position: absolute; inset: 0; z-index: 5;
-      background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover; background-position: center;
+      background: #0a0e14; /* Color profundo */
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      transition: 0.5s;
+      transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     }
     .video-caption.hidden { opacity: 0; pointer-events: none; }
-    .caption-text { font-size: 38px; font-weight: 900; color: #fff; letter-spacing: -1px; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .play-btn { 
-        width: 60px; height: 60px; background: #fff; border-radius: 50%; 
-        display: flex; align-items: center; justify-content: center; margin-top: 15px;
-        box-shadow: 0 0 30px rgba(255,255,255,0.2);
+    
+    /* Brillo de fondo para la miniatura */
+    .video-caption::before {
+      content: ''; position: absolute; width: 200px; height: 200px;
+      background: var(--accent); filter: blur(120px); opacity: 0.1;
     }
 
+    .caption-text { 
+      position: relative; font-size: 32px; font-weight: 900; 
+      color: #fff; letter-spacing: -0.5px;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #fff 0%, var(--text-1) 100%);
+      -webkit-background-clip: text; color: transparent;
+    }
+    
+    .play-btn { 
+      position: relative; width: 64px; height: 64px; 
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+      margin-top: 20px; backdrop-filter: blur(10px); transition: 0.3s;
+    }
+    .play-btn svg { fill: #fff; transition: 0.3s; }
+    .video-wrapper:hover .play-btn { transform: scale(1.1); background: #fff; }
+    .video-wrapper:hover .play-btn svg { fill: #000; }
+
+    /* Info */
     .class-info { padding: 30px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
     .info-text { flex-grow: 1; }
     .class-info h2 { margin: 0 0 10px; font-size: 22px; font-weight: 800; color: #fff; }
@@ -91,7 +108,7 @@
 
     footer { margin: 60px 0 40px; text-align: center; opacity: 0.2; font-size: 11px; }
 
-    @media (max-width: 650px) { .class-info { flex-direction: column; } .btn-complete { width: 100%; border-radius: 12px; } }
+    @media (max-width: 650px) { .class-info { flex-direction: column; } .btn-complete { width: 100%; border-radius: 12px; } .caption-text { font-size: 24px; } }
   </style>
 </head>
 <body>
@@ -124,6 +141,7 @@
   </main>
 
   <script>
+    // --- AQUÍ AGREGAS LAS CLASES ---
     const CLASES_MGA = [
       {
         id: "clase_01",
@@ -149,7 +167,9 @@
           <div class="video-wrapper" onclick="playVideo(this)">
             <div class="video-caption">
               <div class="caption-text">Caption MGA</div>
-              <div class="play-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg></div>
+              <div class="play-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
             </div>
             <iframe src="${clase.link}" allow="autoplay" allowfullscreen></iframe>
           </div>
@@ -192,6 +212,7 @@
       document.getElementById('progress-val').innerText = percentage;
     }
 
+    // Fondo Animado
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
