@@ -10,18 +10,19 @@
 
   <style>
     :root {
-      --bg-0: #0b0e12;
-      --bg-1: #0f141b;
+      --bg-0: #05070a;
+      --bg-1: #0b0e14;
       --text-0: #e8eef7;
       --text-1: #b9c3d3;
       --accent: #64b4ff;
       --border-1: 1px solid rgba(255,255,255,0.08);
-      --blur-1: saturate(140%) blur(12px);
+      --blur-1: saturate(160%) blur(15px);
+      --ease: cubic-bezier(.16,1,.3,1);
 
-      --card-grad-master: linear-gradient(180deg, rgba(54,90,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
-      --card-grad-setter: linear-gradient(180deg, rgba(0,212,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
-      --card-grad-puestos: linear-gradient(180deg, rgba(185,110,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
-      --card-grad-economia: linear-gradient(180deg, rgba(0,255,163,0.25) 0%, rgba(21,28,45,0.85) 100%);
+      --card-grad-master: linear-gradient(180deg, rgba(54,90,255,0.2) 0%, rgba(15,20,30,0.9) 100%);
+      --card-grad-setter: linear-gradient(180deg, rgba(0,212,255,0.2) 0%, rgba(15,20,30,0.9) 100%);
+      --card-grad-puestos: linear-gradient(180deg, rgba(185,110,255,0.2) 0%, rgba(15,20,30,0.9) 100%);
+      --card-grad-economia: linear-gradient(180deg, rgba(0,255,163,0.2) 0%, rgba(15,20,30,0.9) 100%);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -41,92 +42,106 @@
       -webkit-background-clip: text; color: transparent;
       filter: drop-shadow(0 0 15px rgba(100, 180, 255, 0.4));
     }
-    .logo-mga span { display: block; font-size: 11px; letter-spacing: 5px; color: var(--text-1); text-transform: uppercase; margin-top: 5px; }
 
     .login-card {
-      background: rgba(15, 20, 28, 0.75); border: var(--border-1); backdrop-filter: var(--blur-1);
+      background: rgba(15, 20, 28, 0.7); border: var(--border-1); backdrop-filter: var(--blur-1);
       padding: 35px; border-radius: 28px; width: 100%; max-width: 400px; z-index: 10;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
     }
-    .input-group { margin-bottom: 20px; text-align: left; }
+    .input-group { margin-bottom: 20px; }
     .input-group label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
     .input-group input {
       width: 100%; padding: 15px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px; color: #fff; font-size: 16px; outline: none;
+      border-radius: 14px; color: #fff; outline: none; transition: 0.3s;
     }
     .login-btn {
       width: 100%; padding: 16px; background: #fff; color: #000; border: none;
-      border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 15px; transition: 0.2s;
+      border-radius: 14px; font-weight: 800; cursor: pointer;
     }
-    .login-btn:hover { background: var(--accent); transform: scale(1.02); }
-    #error-msg { color: #ff6b6b; font-size: 13px; margin-top: 15px; text-align: center; display: none; }
 
-    /* 2. CONTENIDO REAL */
+    /* LOADER PROFESIONAL */
+    #loader {
+      position: fixed; inset: 0; z-index: 10000; background: var(--bg-0);
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .load-bar { width: 240px; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; margin-top: 20px; }
+    .load-bar-inner { position: absolute; height: 100%; width: 0; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+    .load-text { font-family: monospace; font-size: 12px; color: var(--accent); letter-spacing: 2px; }
+
+    /* 2. CONTENIDO PRINCIPAL */
     #main-content { display: none; position: relative; z-index: 5; }
-    .shell { max-width: 1200px; margin: 0 auto; padding: 32px 20px 80px; }
+    .shell { max-width: 1200px; margin: 0 auto; padding: 20px 20px 80px; }
 
-    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+    /* MENU */
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; padding: 20px 0; }
     .menu-container { position: relative; }
-    .menu-trigger {
-      display: flex; align-items: center; gap: 8px; padding: 10px 16px;
-      background: rgba(255,255,255,0.05); border: var(--border-1); border-radius: 12px;
-      color: #fff; cursor: pointer; font-weight: 700; transition: 0.3s;
+    .menu-btn {
+      background: rgba(255,255,255,0.05); border: var(--border-1); color: #fff;
+      padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 700;
     }
-    .menu-panel {
-      position: absolute; top: calc(100% + 10px); left: 0; width: 220px;
-      background: #141b22; border: var(--border-1); border-radius: 16px;
-      padding: 8px; display: none; z-index: 100; backdrop-filter: var(--blur-1);
+    .menu-dropdown {
+      position: absolute; top: 110%; left: 0; width: 200px; background: #0f141b;
+      border: var(--border-1); border-radius: 14px; padding: 8px; display: none; z-index: 1000;
     }
-    .menu-panel.open { display: block; }
-    .menu-item { display: block; padding: 12px 16px; color: var(--text-1); text-decoration: none; border-radius: 10px; font-size: 14px; }
+    .menu-dropdown.open { display: block; }
+    .menu-item { display: block; padding: 12px; color: var(--text-1); text-decoration: none; border-radius: 8px; font-size: 14px; }
     .menu-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-    .brand h2 { font-size: clamp(28px, 5vw, 42px); font-weight: 800; margin: 0 0 10px; background: linear-gradient(90deg, #fff, #bcd6ff); -webkit-background-clip: text; color: transparent; }
-    .brand p { color: var(--text-1); max-width: 700px; line-height: 1.6; margin-bottom: 40px; }
-
-    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+    /* CARDS ESTILO ORIGINAL */
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
     .card {
-      grid-column: span 12; position: relative; border-radius: 24px; border: var(--border-1); 
-      padding: 35px; text-decoration: none; color: inherit; overflow: hidden;
-      transition: 0.3s cubic-bezier(.16,1,.3,1); text-align: center;
+      grid-column: span 12; background: var(--bg-1); border: var(--border-1); border-radius: 20px;
+      padding: 30px; position: relative; overflow: hidden; transition: 0.3s var(--ease);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
     }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+    
     .card.master { background: var(--card-grad-master); }
     .card.setter { background: var(--card-grad-setter); }
     .card.puestos { background: var(--card-grad-puestos); }
     .card.economia { background: var(--card-grad-economia); }
 
-    .card h3 { font-size: 26px; font-weight: 800; margin: 0 0 12px; }
-    .card p { color: var(--text-1); font-size: 16px; margin: 0; line-height: 1.5; }
-
-    @media (min-width: 768px) {
-      .card { grid-column: span 6; }
-      .card.master { grid-column: span 12; }
+    .card-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+    .card h3 { font-size: 22px; margin: 0 0 10px; font-weight: 800; }
+    .card p { color: var(--text-1); font-size: 14px; line-height: 1.5; margin: 0 0 20px; }
+    
+    .card-btn {
+      background: #fff; color: #000; padding: 10px 24px; border-radius: 10px;
+      text-decoration: none; font-weight: 700; font-size: 14px; transition: 0.2s;
     }
+    .card-btn:hover { background: var(--accent); transform: scale(1.05); }
 
-    .btn-logout { margin-top: 50px; background: none; border: 1px solid #ff6b6b; color: #ff6b6b; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+    @media (min-width: 768px) { .card { grid-column: span 6; } .card.master { grid-column: span 12; } }
+
+    #error-msg { color: #ff6b6b; font-size: 13px; margin-top: 15px; text-align: center; display: none; }
   </style>
 </head>
 <body>
 
   <canvas id="bg-canvas"></canvas>
 
+  <div id="loader">
+    <div class="load-text" id="status-text">INICIANDO PROTOCOLOS...</div>
+    <div class="load-bar">
+      <div class="load-bar-inner" id="load-inner"></div>
+    </div>
+  </div>
+
   <div id="lock-screen">
     <div class="logo-mga">
       <h1>MGA</h1>
-      <span>Master Grand Agency</span>
+      <span style="letter-spacing: 5px; color: var(--text-1); font-size: 10px; text-transform: uppercase;">Master Grand Agency</span>
     </div>
     <div class="login-card">
       <div class="input-group">
-        <label>Usuario Autorizado</label>
-        <input type="text" id="user-input" autocomplete="off" placeholder="Usuario">
+        <label>Usuario</label>
+        <input type="text" id="user-input" placeholder="Nombre de usuario" autocomplete="off">
       </div>
       <div class="input-group">
-        <label>Contraseña Personal</label>
+        <label>Llave Maestra</label>
         <input type="password" id="pass-input" placeholder="••••">
       </div>
-      <button class="login-btn" onclick="validateAccess()">ENTRAR AL PANEL</button>
-      <p id="error-msg">Usuario o contraseña incorrectos</p>
+      <button class="login-btn" onclick="startAuth()">ENTRAR AL PANEL</button>
+      <p id="error-msg">Acceso denegado</p>
     </div>
   </div>
 
@@ -134,76 +149,115 @@
     <main class="shell">
       <div class="topbar">
         <div class="menu-container">
-          <button class="menu-trigger" id="menu-btn">Menú</button>
-          <div class="menu-panel" id="menu-panel">
+          <button class="menu-btn" onclick="toggleMenu(event)">Menú</button>
+          <div class="menu-dropdown" id="dropdown">
             <a href="index.html" class="menu-item">Inicio</a>
             <a href="support.html" class="menu-item">Soporte Técnico</a>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05);">
             <a href="#" class="menu-item" onclick="logout()" style="color:#ff6b6b;">Cerrar Sesión</a>
           </div>
         </div>
-        <div style="font-weight: 800; color: var(--accent);">MGA CENTRAL</div>
+        <div style="font-weight: 800; letter-spacing: 1px; color: var(--accent);">MGA CENTRAL</div>
       </div>
 
-      <header class="brand">
-        <h2>Bienvenido, <span id="display-user"></span></h2>
-        <p>Has accedido al ecosistema de Master Grand Agency. Selecciona tu área de trabajo.</p>
+      <header style="margin-bottom: 40px;">
+        <h2 style="font-size: 32px; font-weight: 800; margin:0;">Bienvenido, <span id="user-tag" style="color:var(--accent);"></span></h2>
+        <p style="color:var(--text-1);">Has accedido al centro operativo de alto rendimiento.</p>
       </header>
 
       <section class="grid">
-        <a href="master.html" class="card master">
+        <div class="card master">
+          <div class="card-icon">💎</div>
           <h3>MASTER GRAND</h3>
-          <p>La formación definitiva para escalar tus resultados por encima de los $1,000 USD.</p>
-        </a>
-        <a href="setter.html" class="card setter">
-          <h3>SETTER PROFESIÓN</h3>
-          <p>Domina la habilidad mejor pagada y gestiona la agenda de la agencia.</p>
-        </a>
-        <a href="laboral.html" class="card puestos">
-          <h3>Puestos Laborales</h3>
-          <p>Explora nuestras +27 vacantes y postúlate a nuevos roles internos.</p>
-        </a>
-        <a href="support.html" class="card economia">
-          <h3>Soporte y Gestión</h3>
-          <p>Carga de prospectos, tickets técnicos y atención 24/7 para el equipo.</p>
-        </a>
-      </section>
+          <p>Estrategias avanzadas para escalar resultados a nivel experto.</p>
+          <a href="master.html" class="card-btn">INGRESAR</a>
+        </div>
 
-      <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+        <div class="card setter">
+          <div class="card-icon">🚀</div>
+          <h3>SETTER PROFESIÓN</h3>
+          <p>Domina la prospección y gestión de agendas para la agencia.</p>
+          <a href="setter.html" class="card-btn">INGRESAR</a>
+        </div>
+
+        <div class="card puestos">
+          <div class="card-icon">💼</div>
+          <h3>PUESTOS LABORALES</h3>
+          <p>Vacantes abiertas y oportunidades de crecimiento interno.</p>
+          <a href="laboral.html" class="card-btn">INGRESAR</a>
+        </div>
+
+        <div class="card economia">
+          <div class="card-icon">📈</div>
+          <h3>SOPORTE Y GESTIÓN</h3>
+          <p>Atención técnica y carga oficial de prospectos.</p>
+          <a href="support.html" class="card-btn">INGRESAR</a>
+        </div>
+      </section>
     </main>
   </div>
 
   <script>
-    /* ==========================================
-       SISTEMA DE CREDENCIALES INDIVIDUALES
-       ========================================== */
     const CREDENCIALES = {
       "admin": "mga123",
       "maiten": "mga",
-      "agus": "123455",
-      "lucas": "clave99"
-      // Estructura: "usuario": "contraseña",
+      "agus": "123455"
     };
 
-    function validateAccess() {
+    function startAuth() {
       const u = document.getElementById('user-input').value.trim().toLowerCase();
       const p = document.getElementById('pass-input').value.trim();
       const err = document.getElementById('error-msg');
 
       if (CREDENCIALES[u] && CREDENCIALES[u] === p) {
-        sessionStorage.setItem('mga_auth', 'true');
-        sessionStorage.setItem('mga_user', u);
-        showApp();
+        sessionStorage.setItem('mga_verified', 'true');
+        sessionStorage.setItem('mga_name', u);
+        runProfessionalLoader();
       } else {
         err.style.display = 'block';
         setTimeout(() => err.style.display = 'none', 2000);
       }
     }
 
-    function showApp() {
-      document.getElementById('lock-screen').style.display = 'none';
+    function runProfessionalLoader() {
+      const lock = document.getElementById('lock-screen');
+      const loader = document.getElementById('loader');
+      const bar = document.getElementById('load-inner');
+      const status = document.getElementById('status-text');
+      
+      lock.style.display = 'none';
+      loader.style.display = 'flex';
+
+      const steps = ["AUTENTICANDO...", "VERIFICANDO CREDENCIALES...", "DESBLOQUEANDO ENTORNO...", "ACCESO CONCEDIDO"];
+      let progress = 0;
+      let stepIdx = 0;
+
+      const interval = setInterval(() => {
+        progress += 2;
+        bar.style.width = progress + "%";
+        
+        if (progress % 25 === 0) {
+          status.textContent = steps[stepIdx];
+          stepIdx++;
+        }
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(showContent, 500);
+        }
+      }, 40);
+    }
+
+    function showContent() {
+      document.getElementById('loader').style.display = 'none';
       document.getElementById('main-content').style.display = 'block';
-      document.getElementById('display-user').textContent = sessionStorage.getItem('mga_user');
+      document.getElementById('user-tag').textContent = sessionStorage.getItem('mga_name');
       document.body.style.overflow = 'auto';
+    }
+
+    function toggleMenu(e) {
+      e.stopPropagation();
+      document.getElementById('dropdown').classList.toggle('open');
     }
 
     function logout() {
@@ -211,14 +265,10 @@
       window.location.reload();
     }
 
-    /* MENÚ Y ESTRELLAS */
-    const menuBtn = document.getElementById('menu-btn');
-    const menuPanel = document.getElementById('menu-panel');
-    menuBtn.onclick = (e) => { e.stopPropagation(); menuPanel.classList.toggle('open'); };
-    document.onclick = () => menuPanel.classList.remove('open');
+    window.onclick = () => document.getElementById('dropdown').classList.remove('open');
+    if (sessionStorage.getItem('mga_verified') === 'true') showContent();
 
-    if (sessionStorage.getItem('mga_auth') === 'true') showApp();
-
+    /* ESTRELLAS */
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
