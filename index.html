@@ -17,7 +17,6 @@
       --border-1: 1px solid rgba(255,255,255,0.08);
       --blur-1: saturate(160%) blur(15px);
       
-      /* Gradientes de las Cards */
       --card-grad-master: linear-gradient(180deg, rgba(54,90,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
       --card-grad-setter: linear-gradient(180deg, rgba(0,212,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
       --card-grad-puestos: linear-gradient(180deg, rgba(185,110,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
@@ -128,32 +127,30 @@
 
     #error-msg { color: #ff6b6b; font-size: 14px; margin-top: 15px; text-align: center; display: none; font-weight: 600; }
 
-    /* --- SISTEMA DE NOTIFICACIONES --- */
+    /* --- SISTEMA DE NOTIFICACIONES DINÁMICAS --- */
     #notif-container {
       position: fixed; bottom: 20px; left: 20px; z-index: 1000;
       pointer-events: none; width: 320px;
     }
     .notif {
-      background: rgba(15, 20, 28, 0.85); border: 1px solid rgba(100, 180, 255, 0.3);
-      backdrop-filter: blur(10px); padding: 15px; border-radius: 16px;
+      background: rgba(15, 20, 28, 0.9); border: 1px solid rgba(100, 180, 255, 0.2);
+      backdrop-filter: blur(12px); padding: 15px; border-radius: 18px;
       display: flex; align-items: center; gap: 12px; margin-top: 10px;
-      transform: translateX(-120%); transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transform: translateX(-130%); transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
     }
     .notif.active { transform: translateX(0); }
-    .notif-icon { width: 35px; height: 35px; background: rgba(100, 180, 255, 0.2); border-radius: 50%; display: grid; place-items: center; color: var(--accent); }
+    .notif-icon { width: 38px; height: 38px; background: linear-gradient(135deg, #64b4ff22, #b96eff22); border-radius: 12px; display: grid; place-items: center; font-size: 18px; border: 1px solid rgba(255,255,255,0.1); }
     .notif-body { font-size: 13px; color: #fff; line-height: 1.4; }
-    .notif-body b { color: var(--accent); }
-    .notif-time { font-size: 10px; color: var(--text-1); display: block; margin-top: 3px; }
+    .notif-body b { color: var(--accent); font-weight: 700; }
+    .notif-time { font-size: 10px; color: var(--text-1); display: block; margin-top: 2px; opacity: 0.7; }
 
-    @media (max-width: 500px) { #notif-container { width: calc(100% - 40px); } }
-    @media (min-width: 768px) { .card { grid-column: span 6; } .card.master { grid-column: span 12; } }
+    @media (max-width: 500px) { #notif-container { width: calc(100% - 40px); bottom: 10px; left: 10px; } }
   </style>
 </head>
 <body>
 
   <canvas id="bg-canvas"></canvas>
-
   <div id="notif-container"></div>
 
   <div id="loader">
@@ -198,175 +195,141 @@
 
       <header style="margin-bottom: 50px;">
         <h1 style="font-size: clamp(28px, 6vw, 48px); font-weight: 800; margin:0; letter-spacing: -1px;">Bienvenido, <span id="display-user" style="color:var(--accent); text-transform: capitalize;"></span></h1>
-        <p style="color:var(--text-1); font-size: 18px; margin-top: 10px;">Ecosistema de aprendizaje y salida laboral.</p>
+        <p style="color:var(--text-1); font-size: 18px; margin-top: 10px;">Ecosistema oficial de Master Grand Agency.</p>
       </header>
 
       <section class="grid">
         <article class="card master">
           <div class="card-content">
-            <div>
-              <h2 class="card-title">MASTER GRAND</h2>
-              <p class="card-desc">Buscá la forma de aprender en este ambiente que te va a llevar a ganar más de $1,000 USD.</p>
-            </div>
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#9ec7ff" stroke-width="2"><path d="M3 18h18l-2-9-5 3-4-6-5 6-2 6Z"/></svg>
-            </div>
+            <div><h2 class="card-title">MASTER GRAND</h2><p class="card-desc">Buscá la forma de aprender en este ambiente que te va a llevar a ganar más de $1,000 USD.</p></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#9ec7ff" stroke-width="2"><path d="M3 18h18l-2-9-5 3-4-6-5 6-2 6Z"/></svg></div>
           </div>
-          <div class="card-meta">
-            <span class="pill">Principal</span>
-            <a href="master.html" class="ghost-btn">ACCEDER</a>
-          </div>
+          <div class="card-meta"><span class="pill">Principal</span><a href="master.html" class="ghost-btn">ACCEDER</a></div>
         </article>
 
         <article class="card setter">
           <div class="card-content">
-            <div>
-              <h2 class="card-title">SETTER PROFESIÓN</h2>
-              <p class="card-desc">Aprendé a generar más de $2,000 USD con la habilidad de setting dentro de la empresa.</p>
-            </div>
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#9ef1ff" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#9ef1ff" fill-opacity="0.3"/></svg>
-            </div>
+            <div><h2 class="card-title">SETTER PROFESIÓN</h2><p class="card-desc">Aprendé a generar más de $2,000 USD con la habilidad de setting dentro de la empresa.</p></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#9ef1ff" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#9ef1ff" fill-opacity="0.3"/></svg></div>
           </div>
-          <div class="card-meta">
-            <span class="pill">Ventas</span>
-            <a href="setter.html" class="ghost-btn">ACCEDER</a>
-          </div>
+          <div class="card-meta"><span class="pill">Ventas</span><a href="setter.html" class="ghost-btn">ACCEDER</a></div>
         </article>
 
         <article class="card puestos">
           <div class="card-content">
-            <div>
-              <h2 class="card-title">PUESTOS LABORALES</h2>
-              <p class="card-desc">Mirá todos los posibles +27 puestos laborales que MGA puede ofrecerte.</p>
-            </div>
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#d8b3ff" stroke-width="2"><path d="M9 6h6l1 2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3l1-2Z"/></svg>
-            </div>
+            <div><h2 class="card-title">PUESTOS LABORALES</h2><p class="card-desc">Mirá todos los posibles +27 puestos laborales que MGA puede ofrecerte.</p></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#d8b3ff" stroke-width="2"><path d="M9 6h6l1 2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3l1-2Z"/></svg></div>
           </div>
-          <div class="card-meta">
-            <span class="pill">Carrera</span>
-            <a href="laboral.html" class="ghost-btn">ACCEDER</a>
-          </div>
+          <div class="card-meta"><span class="pill">Carrera</span><a href="laboral.html" class="ghost-btn">ACCEDER</a></div>
         </article>
 
         <article class="card economia">
           <div class="card-content">
-            <div>
-              <h2 class="card-title">SISTEMA DE ECONOMÍA</h2>
-              <p class="card-desc">Aprendé el método de prospección profesional para generar ingresos mensuales altos.</p>
-            </div>
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#8fffd6" stroke-width="2"><circle cx="12" cy="12" r="6"/><path d="M3 12c3-4 18-4 21 0-3 4-18 4-21 0Z"/></svg>
-            </div>
+            <div><h2 class="card-title">SISTEMA DE ECONOMÍA</h2><p class="card-desc">Aprendé el método de prospección profesional para generar ingresos mensuales altos.</p></div>
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#8fffd6" stroke-width="2"><circle cx="12" cy="12" r="6"/><path d="M3 12c3-4 18-4 21 0-3 4-18 4-21 0Z"/></svg></div>
           </div>
-          <div class="card-meta">
-            <span class="pill">Estrategia</span>
-            <a href="sistema.html" class="ghost-btn">ACCEDER</a>
-          </div>
+          <div class="card-meta"><span class="pill">Estrategia</span><a href="sistema.html" class="ghost-btn">ACCEDER</a></div>
         </article>
       </section>
     </main>
   </div>
 
   <script>
-    /* -----------------------------------------------------------
-       CONFIGURACIÓN DE USUARIOS
-    ----------------------------------------------------------- */
+    /* USUARIOS */
     const DATABASE = { "maiten": "mga", "agus": "123455", "maria234": "mga" };
-    const SUSPENDIDOS = ["admin", "usuario_ejemplo"];
+    const SUSPENDIDOS = ["admin"];
 
     function checkAuth() {
       const u = document.getElementById('u-in').value.trim().toLowerCase();
       const p = document.getElementById('p-in').value.trim();
-      const err = document.getElementById('error-msg');
-
-      if (SUSPENDIDOS.includes(u)) {
-        alert("Tu usuario esta suspendido por motivos serios administrativos...");
-        return;
-      }
-
-      if (DATABASE[u] && DATABASE[u] === p) {
-        sessionStorage.setItem('mga_verified', 'true');
-        sessionStorage.setItem('mga_user', u);
-        startLoader();
-      } else {
-        err.style.display = 'block';
-        setTimeout(() => err.style.display = 'none', 2000);
-      }
+      if (SUSPENDIDOS.includes(u)) { alert("Tu usuario esta suspendido por motivos serios administrativos..."); return; }
+      if (DATABASE[u] && DATABASE[u] === p) { sessionStorage.setItem('mga_verified', 'true'); sessionStorage.setItem('mga_user', u); startLoader(); }
+      else { document.getElementById('error-msg').style.display = 'block'; setTimeout(()=> document.getElementById('error-msg').style.display = 'none', 2000); }
     }
 
-    /* -----------------------------------------------------------
-       SISTEMA DE NOTIFICACIONES INFINITAS
-    ----------------------------------------------------------- */
-    const NOTIF_DATA = [
-      { name: "Maria", action: "cerró una venta de", amount: "$143,000 pesos" },
-      { name: "Juan", action: "recibió su pago de", amount: "500k por Settear" },
-      { name: "Lucas", action: "concretó un pago de", amount: "$85,000 pesos" },
-      { name: "Santi", action: "acaba de cobrar", amount: "$1.2M de comisión" },
-      { name: "Elena", action: "subió a nivel", amount: "Setter Elite" },
-      { name: "Franco", action: "cerró su 3er venta de", amount: "$210,000 pesos" },
-      { name: "Agustina", action: "recibió bono de", amount: "$45,000 pesos" }
+    /* --- GENERADOR DE ACTIVIDAD INFINITA (MILES DE COMBINACIONES) --- */
+    const NAMES = ["Maria", "Juan", "Lucas", "Santi", "Elena", "Franco", "Agustina", "Mateo", "Valentina", "Nicolas", "Sofia", "Bruno", "Camila", "Dante", "Valeria", "Tomas", "Micaela", "Julian", "Paula", "Facundo", "Rocio", "Gonzalo", "Martina", "Lautaro", "Joaquin", "Delfina", "Ignacio", "Lola", "Federico", "Abril"];
+    const SURNAMES = ["G.", "M.", "L.", "S.", "P.", "R.", "B.", "C.", "D.", "F.", "H.", "V.", "T.", "Z.", "A.", "N."];
+    const ACTIONS = [
+      { txt: "cerró una venta de", type: "money" },
+      { txt: "recibió un pago de", type: "money" },
+      { txt: "concretó un ticket de", type: "money" },
+      { txt: "acaba de cobrar", type: "money" },
+      { txt: "generó una comisión de", type: "money" },
+      { txt: "subió de rango a", type: "rank" },
+      { txt: "se unió al equipo de", type: "team" },
+      { txt: "completó su formación en", type: "edu" }
     ];
+    const RANKS = ["Setter Elite", "Closer Pro", "Master Partner", "Líder de Equipo", "Socio MGA"];
+    const TEAMS = ["Ventas", "Setting", "Marketing", "Soporte", "Estrategia"];
+    const EDU = ["Prospección Avanzada", "Cierre de Ventas", "Economía Digital", "Setting 2.0"];
 
     function showNotification() {
       const container = document.getElementById('notif-container');
-      const item = NOTIF_DATA[Math.floor(Math.random() * NOTIF_DATA.length)];
+      const name = NAMES[Math.floor(Math.random() * NAMES.length)] + " " + SURNAMES[Math.floor(Math.random() * SURNAMES.length)];
+      const action = ACTIONS[Math.floor(Math.random() * ACTIONS.length)];
       
+      let detail = "";
+      let icon = "🔔";
+
+      if(action.type === "money") {
+        detail = "$" + (Math.floor(Math.random() * 450) + 50) + "." + (Math.floor(Math.random() * 900) + 100) + " ARS";
+        icon = "💸";
+      } else if(action.type === "rank") {
+        detail = RANKS[Math.floor(Math.random() * RANKS.length)];
+        icon = "🏆";
+      } else if(action.type === "team") {
+        detail = "Equipo de " + TEAMS[Math.floor(Math.random() * TEAMS.length)];
+        icon = "🤝";
+      } else {
+        detail = EDU[Math.floor(Math.random() * EDU.length)];
+        icon = "📚";
+      }
+
       const div = document.createElement('div');
       div.className = 'notif';
       div.innerHTML = `
-        <div class="notif-icon">💸</div>
+        <div class="notif-icon">${icon}</div>
         <div class="notif-body">
-          <b>${item.name}</b> ${item.action} <b>${item.amount}</b>
-          <span class="notif-time">hace unos segundos</span>
+          <b>${name}</b> ${action.txt} <b>${detail}</b>
+          <span class="notif-time">hace ${Math.floor(Math.random() * 59) + 1} segundos</span>
         </div>
       `;
       
       container.appendChild(div);
       setTimeout(() => div.classList.add('active'), 100);
-
-      // Eliminar después de 6 segundos
-      setTimeout(() => {
-        div.classList.remove('active');
-        setTimeout(() => div.remove(), 500);
-      }, 6000);
+      setTimeout(() => { div.classList.remove('active'); setTimeout(() => div.remove(), 600); }, 6000);
     }
 
-    // Iniciar bucle de notificaciones (Cada 10 segundos)
-    setInterval(showNotification, 10000);
-    setTimeout(showNotification, 3000); // Primera después de 3 seg.
+    // Intervalo aleatorio para que parezca más natural (entre 7 y 15 segundos)
+    function scheduleNext() {
+      const delay = Math.floor(Math.random() * 8000) + 7000;
+      setTimeout(() => { showNotification(); scheduleNext(); }, delay);
+    }
+    setTimeout(showNotification, 3000);
+    scheduleNext();
 
-    /* -----------------------------------------------------------
-       LÓGICA DE INTERFAZ
-    ----------------------------------------------------------- */
+    /* INTERFAZ */
     function startLoader() {
       document.getElementById('lock-screen').style.display = 'none';
       const loader = document.getElementById('loader');
       const bar = document.getElementById('bar-inner');
-      const txt = document.getElementById('status-txt');
       loader.style.display = 'flex';
-
       let p = 0;
-      const int = setInterval(() => {
-        p += 2; bar.style.width = p + "%";
-        if(p >= 100) { clearInterval(int); setTimeout(launchApp, 300); }
-      }, 25);
+      const int = setInterval(() => { p += 2; bar.style.width = p + "%"; if(p >= 100) { clearInterval(int); setTimeout(launchApp, 300); } }, 25);
     }
-
     function launchApp() {
       document.getElementById('loader').style.display = 'none';
       document.getElementById('main-content').style.display = 'block';
       document.getElementById('display-user').textContent = sessionStorage.getItem('mga_user');
       document.body.style.overflow = 'auto';
     }
-
     function toggleMenu(e) { e.stopPropagation(); document.getElementById('menu-panel').classList.toggle('open'); }
     function logout() { sessionStorage.clear(); window.location.reload(); }
     window.onclick = () => document.getElementById('menu-panel').classList.remove('open');
     if(sessionStorage.getItem('mga_verified')) launchApp();
 
-    /* FONDO DE ESTRELLAS */
+    /* ESTRELLAS */
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
@@ -376,12 +339,8 @@
       for(let i=0; i<150; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5, v: Math.random()*0.3});
     }
     function draw() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = "rgba(255,255,255,0.15)";
-      stars.forEach(s => {
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
-        s.y -= s.v; if(s.y < 0) s.y = canvas.height;
-      });
+      ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(255,255,255,0.15)";
+      stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill(); s.y -= s.v; if(s.y < 0) s.y = canvas.height; });
       requestAnimationFrame(draw);
     }
     window.onresize = setup; setup(); draw();
