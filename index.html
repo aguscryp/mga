@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MGA — Master Grand Agency</title>
+  <title>MGA — Portal Autorizado</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-0: #0b0e12;
-      --bg-1: #0f141b;
+      --bg-0: #05070a;
       --text-0: #e8eef7;
       --text-1: #b9c3d3;
       --accent: #64b4ff;
       --border-1: 1px solid rgba(255,255,255,0.08);
-      --blur-1: saturate(140%) blur(12px);
+      --blur-1: saturate(160%) blur(15px);
       
-      /* Gradientes Originales */
+      /* Gradientes de las Cards */
       --card-grad-master: linear-gradient(180deg, rgba(54,90,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
       --card-grad-setter: linear-gradient(180deg, rgba(0,212,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
       --card-grad-puestos: linear-gradient(180deg, rgba(185,110,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
@@ -25,161 +25,162 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; background: var(--bg-0); color: var(--text-0); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    html, body { height: 100%; margin: 0; background: var(--bg-0); color: var(--text-0); font-family: 'Inter', sans-serif; overflow: hidden; }
 
-    /* FONDO */
-    .bg-stars { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at 50% 50%, #161b22 0%, #0b0e12 100%); }
     #bg-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
 
-    /* 1. LOGIN & LOADER */
+    /* --- LOGIN PREMIUM --- */
     #lock-screen {
       position: fixed; inset: 0; z-index: 9999; background: var(--bg-0);
       display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
     }
+    .logo-mga { position: relative; z-index: 10; margin-bottom: 35px; text-align: center; }
     .logo-mga h1 {
-      font-size: clamp(40px, 10vw, 60px); font-weight: 900; letter-spacing: -2px; margin: 0;
-      background: linear-gradient(90deg, #fff, var(--accent)); -webkit-background-clip: text; color: transparent;
+      font-size: clamp(40px, 10vw, 60px); font-weight: 900; letter-spacing: 4px; margin: 0;
+      background: linear-gradient(135deg, #fff 0%, #64b4ff 50%, #b96eff 100%);
+      -webkit-background-clip: text; color: transparent;
+      filter: drop-shadow(0 0 20px rgba(100, 180, 255, 0.4));
     }
+    .logo-mga span { 
+      display: block; font-size: 11px; letter-spacing: 6px; color: var(--text-1); 
+      text-transform: uppercase; margin-top: 8px; font-weight: 400; opacity: 0.8;
+    }
+
     .login-card {
-      background: rgba(15, 20, 28, 0.8); border: var(--border-1); backdrop-filter: var(--blur-1);
-      padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; z-index: 10; margin-top: 20px;
+      position: relative; z-index: 10; width: 100%; max-width: 400px;
+      background: rgba(15, 20, 28, 0.6); border: var(--border-1); backdrop-filter: var(--blur-1);
+      padding: 40px; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
     }
-    .input-group { margin-bottom: 20px; }
-    .input-group label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+    .input-group { margin-bottom: 22px; text-align: left; }
+    .input-group label { display: block; margin-bottom: 10px; font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
     .input-group input {
-      width: 100%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px; color: #fff; outline: none; transition: 0.3s;
+      width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; color: #fff; font-size: 16px; outline: none; transition: 0.3s;
     }
+    .input-group input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(100, 180, 255, 0.2); }
+    
     .login-btn {
       width: 100%; padding: 16px; background: #fff; color: #000; border: none;
-      border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s;
+      border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 15px; transition: 0.3s;
+      text-transform: uppercase; letter-spacing: 1px;
     }
-    #error-msg { color: #ff6b6b; font-size: 13px; text-align: center; margin-top: 15px; display: none; }
+    .login-btn:hover { transform: translateY(-2px); background: var(--accent); color: #fff; }
 
-    /* LOADER CINEMÁTICO */
+    /* --- LOADER --- */
     #loader {
       position: fixed; inset: 0; z-index: 10000; background: var(--bg-0);
       display: none; flex-direction: column; align-items: center; justify-content: center;
     }
-    .load-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 20px; position: relative; overflow: hidden; }
-    .load-bar-inner { position: absolute; height: 100%; width: 0; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
-    .load-text { font-family: monospace; font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; }
+    .load-text { font-family: monospace; font-size: 10px; color: var(--accent); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }
+    .load-bar { width: 220px; height: 1px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+    .load-bar-inner { position: absolute; height: 100%; width: 0; background: var(--accent); box-shadow: 0 0 20px var(--accent); }
 
-    /* 2. CONTENIDO REAL */
-    #main-content { display: none; position: relative; z-index: 5; }
-    .shell { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
+    /* --- DASHBOARD --- */
+    #main-content { display: none; height: 100vh; overflow-y: auto; position: relative; z-index: 5; }
+    .shell { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
 
-    /* MENU PROFESIONAL */
+    /* TOPBAR & MENU */
     .topbar { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
-    .menu { position: relative; }
     .menu-btn {
-      display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+      display: flex; align-items: center; gap: 10px; padding: 12px 20px;
       background: rgba(24,32,44,0.6); border: var(--border-1); border-radius: 14px;
       color: #fff; cursor: pointer; backdrop-filter: var(--blur-1); font-weight: 700;
     }
     .menu-panel {
-      position: absolute; top: calc(100% + 10px); left: 0; width: 220px;
-      background: rgba(18,24,33,0.95); border: var(--border-1); border-radius: 16px;
-      padding: 10px; backdrop-filter: var(--blur-1); display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      position: absolute; top: 100px; left: 20px; width: 220px;
+      background: rgba(18,24,33,0.98); border: var(--border-1); border-radius: 16px;
+      padding: 10px; backdrop-filter: var(--blur-1); display: none; z-index: 100;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
-    .menu-panel.open { display: block; animation: menuFade 0.2s ease; }
-    @keyframes menuFade { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .menu-panel.open { display: block; }
     .menu-item {
       display: flex; align-items: center; gap: 10px; padding: 12px;
       color: var(--text-1); text-decoration: none; border-radius: 10px; font-size: 14px;
     }
     .menu-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-    /* CARDS ORIGINALES */
+    /* CARDS */
     .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
     .card {
-      grid-column: span 12; position: relative; border-radius: 20px; border: var(--border-1);
-      padding: 30px; overflow: hidden; transition: 0.3s cubic-bezier(.16,1,.3,1);
+      grid-column: span 12; position: relative; border-radius: 22px; border: var(--border-1);
+      padding: 35px; overflow: hidden; transition: 0.4s cubic-bezier(.16,1,.3,1);
     }
-    .card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-    
+    .card:hover { transform: translateY(-8px); border-color: rgba(255,255,255,0.2); }
     .card.master { background: var(--card-grad-master); }
     .card.setter { background: var(--card-grad-setter); }
     .card.puestos { background: var(--card-grad-puestos); }
     .card.economia { background: var(--card-grad-economia); }
 
     .card-content { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
-    .card-title { font-size: 24px; font-weight: 800; margin: 0 0 10px; }
+    .card-title { font-size: 26px; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.5px; }
     .card-desc { color: var(--text-1); font-size: 15px; line-height: 1.6; margin: 0; max-width: 80%; }
     
     .card-icon {
-      width: 54px; height: 54px; background: rgba(255,255,255,0.06); border: var(--border-1);
-      border-radius: 14px; display: grid; place-items: center; flex-shrink: 0;
+      width: 56px; height: 56px; background: rgba(255,255,255,0.06); border: var(--border-1);
+      border-radius: 16px; display: grid; place-items: center; flex-shrink: 0;
     }
     .card-icon svg { width: 28px; height: 28px; }
 
-    .card-meta { margin-top: 25px; display: flex; align-items: center; gap: 12px; }
-    .pill { padding: 8px 14px; background: rgba(255,255,255,0.06); border-radius: 99px; font-size: 12px; color: var(--text-1); border: var(--border-1); }
+    .card-meta { margin-top: 30px; display: flex; align-items: center; gap: 15px; }
+    .pill { padding: 8px 14px; background: rgba(255,255,255,0.06); border-radius: 99px; font-size: 11px; color: var(--text-1); border: var(--border-1); text-transform: uppercase; font-weight: 600; }
     .ghost-btn {
-      display: flex; align-items: center; gap: 8px; padding: 8px 16px;
-      background: #fff; color: #000; border-radius: 12px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px; padding: 10px 20px;
+      background: #fff; color: #000; border-radius: 12px; font-weight: 800;
       text-decoration: none; font-size: 13px; transition: 0.2s;
     }
-    .ghost-btn:hover { transform: scale(1.05); }
+
+    #error-msg { color: #ff6b6b; font-size: 14px; margin-top: 15px; text-align: center; display: none; font-weight: 600; }
 
     @media (min-width: 768px) { .card { grid-column: span 6; } .card.master { grid-column: span 12; } }
   </style>
 </head>
 <body>
 
-  <div class="bg-stars"></div>
   <canvas id="bg-canvas"></canvas>
 
   <div id="loader">
-    <div class="load-text" id="load-status">Iniciando Sistemas</div>
+    <div class="load-text" id="status-txt">Sincronizando Identidad</div>
     <div class="load-bar"><div class="load-bar-inner" id="bar-inner"></div></div>
   </div>
 
   <div id="lock-screen">
-    <div class="logo-mga"><h1>MGA</h1></div>
+    <div class="logo-mga">
+      <h1>MGA</h1>
+      <span>Master Grand Agency</span>
+    </div>
+    
     <div class="login-card">
       <div class="input-group">
-        <label>Usuario del Equipo</label>
-        <input type="text" id="user-in" placeholder="Tu usuario" autocomplete="off">
+        <label>ID de Usuario</label>
+        <input type="text" id="u-in" autocomplete="off" placeholder="Usuario">
       </div>
       <div class="input-group">
-        <label>Contraseña</label>
-        <input type="password" id="pass-in" placeholder="••••••••">
+        <label>Llave Maestra</label>
+        <input type="password" id="p-in" placeholder="••••••••">
       </div>
-      <button class="login-btn" onclick="tryLogin()">ACCEDER AL PANEL</button>
-      <div id="error-msg">Credenciales Inválidas</div>
+      <button class="login-btn" onclick="checkAuth()">INGRESAR AL PANEL</button>
+      <p id="error-msg">ACCESO DENEGADO</p>
     </div>
   </div>
 
   <div id="main-content">
     <main class="shell">
       <div class="topbar">
-        <div class="menu">
-          <button class="menu-btn" onclick="toggleMenu(event)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-            Menú
-          </button>
-          <div class="menu-panel" id="menu-panel">
-            <a href="index.html" class="menu-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-              Inicio
-            </a>
-            <a href="support.html" class="menu-item">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              Soporte
-            </a>
-            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
-            <a href="#" class="menu-item" onclick="logout()" style="color:#ff6b6b;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-              Cerrar Sesión
-            </a>
-          </div>
+        <button class="menu-btn" onclick="toggleMenu(event)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          MENÚ
+        </button>
+        <div class="menu-panel" id="menu-panel">
+          <a href="index.html" class="menu-item">Inicio</a>
+          <a href="support.html" class="menu-item">Soporte</a>
+          <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
+          <a href="#" class="menu-item" onclick="logout()" style="color:#ff6b6b;">Cerrar Sesión</a>
         </div>
       </div>
 
-      <header style="margin-bottom: 40px;">
-        <h1 style="font-size: clamp(24px, 5vw, 42px); font-weight: 800; margin:0;">Bienvenido, <span id="user-display" style="color:var(--accent);"></span></h1>
-        <p style="color:var(--text-1); margin-top:10px;">Sector operativo de Master Grand Agency.</p>
+      <header style="margin-bottom: 50px;">
+        <h1 style="font-size: clamp(28px, 6vw, 48px); font-weight: 800; margin:0; letter-spacing: -1px;">Bienvenido, <span id="display-user" style="color:var(--accent); text-transform: capitalize;"></span></h1>
+        <p style="color:var(--text-1); font-size: 18px; margin-top: 10px;">Ecosistema de aprendizaje y salida laboral.</p>
       </header>
 
       <section class="grid">
@@ -187,15 +188,15 @@
           <div class="card-content">
             <div>
               <h2 class="card-title">MASTER GRAND</h2>
-              <p class="card-desc">Ambiente de conocimiento diseñado para escalar a más de $1,000 USD garantizados.</p>
+              <p class="card-desc">Ambiente de alto nivel diseñado para escalar tus ingresos por encima de los $1,000 USD.</p>
             </div>
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#9ec7ff" stroke-width="2"><path d="M3 18h18l-2-9-5 3-4-6-5 6-2 6Z"/></svg>
             </div>
           </div>
           <div class="card-meta">
-            <span class="pill">Programa Pro</span>
-            <a href="master.html" class="ghost-btn">INGRESAR</a>
+            <span class="pill">Principal</span>
+            <a href="master.html" class="ghost-btn">ACCEDER</a>
           </div>
         </article>
 
@@ -203,15 +204,15 @@
           <div class="card-content">
             <div>
               <h2 class="card-title">SETTER PROFESIÓN</h2>
-              <p class="card-desc">Habilidades de setting para generar más de $2,000 USD mensuales.</p>
+              <p class="card-desc">Domina la habilidad de prospección y genera más de $2,000 USD mensuales.</p>
             </div>
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#9ef1ff" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#9ef1ff" fill-opacity="0.3"/></svg>
             </div>
           </div>
           <div class="card-meta">
-            <span class="pill">Habilidad Clave</span>
-            <a href="setter.html" class="ghost-btn">INGRESAR</a>
+            <span class="pill">Ventas</span>
+            <a href="setter.html" class="ghost-btn">ACCEDER</a>
           </div>
         </article>
 
@@ -219,15 +220,15 @@
           <div class="card-content">
             <div>
               <h2 class="card-title">PUESTOS LABORALES</h2>
-              <p class="card-desc">Explora los +27 roles disponibles en el ecosistema de MGA.</p>
+              <p class="card-desc">Explora las +27 oportunidades de carrera dentro de la red de MGA.</p>
             </div>
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#d8b3ff" stroke-width="2"><path d="M9 6h6l1 2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3l1-2Z"/></svg>
             </div>
           </div>
           <div class="card-meta">
-            <span class="pill">Oportunidades</span>
-            <a href="laboral.html" class="ghost-btn">INGRESAR</a>
+            <span class="pill">Carrera</span>
+            <a href="laboral.html" class="ghost-btn">ACCEDER</a>
           </div>
         </article>
 
@@ -235,7 +236,7 @@
           <div class="card-content">
             <div>
               <h2 class="card-title">SISTEMA DE ECONOMÍA</h2>
-              <p class="card-desc">Método de prospección profesional para maximizar beneficios.</p>
+              <p class="card-desc">Estrategias profesionales de gestión financiera y prospección avanzada.</p>
             </div>
             <div class="card-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#8fffd6" stroke-width="2"><circle cx="12" cy="12" r="6"/><path d="M3 12c3-4 18-4 21 0-3 4-18 4-21 0Z"/></svg>
@@ -243,7 +244,7 @@
           </div>
           <div class="card-meta">
             <span class="pill">Estrategia</span>
-            <a href="sistema.html" class="ghost-btn">INGRESAR</a>
+            <a href="sistema.html" class="ghost-btn">ACCEDER</a>
           </div>
         </article>
       </section>
@@ -251,56 +252,56 @@
   </div>
 
   <script>
-    /* CREDENCIALES (Añade aquí con coma al final de cada línea) */
-    const CREDENCIALES = {
+    /* USUARIOS AUTORIZADOS */
+    const DATABASE = {
       "admin": "mga123",
       "maiten": "mga",
       "agus": "123455",
-      "invitado": "mga2025"
+      "maria234": "mga"
     };
 
-    function tryLogin() {
-      const u = document.getElementById('user-in').value.trim().toLowerCase();
-      const p = document.getElementById('pass-in').value.trim();
+    function checkAuth() {
+      const u = document.getElementById('u-in').value.trim().toLowerCase();
+      const p = document.getElementById('p-in').value.trim();
       const err = document.getElementById('error-msg');
 
-      if (CREDENCIALES[u] && CREDENCIALES[u] === p) {
-        sessionStorage.setItem('mga_auth', 'true');
+      if (DATABASE[u] && DATABASE[u] === p) {
+        sessionStorage.setItem('mga_verified', 'true');
         sessionStorage.setItem('mga_user', u);
-        runLoader();
+        startLoader();
       } else {
         err.style.display = 'block';
-        setTimeout(() => err.style.display = 'none', 2500);
+        setTimeout(() => err.style.display = 'none', 2000);
       }
     }
 
-    function runLoader() {
+    function startLoader() {
       document.getElementById('lock-screen').style.display = 'none';
       const loader = document.getElementById('loader');
       const bar = document.getElementById('bar-inner');
-      const status = document.getElementById('load-status');
+      const txt = document.getElementById('status-txt');
       loader.style.display = 'flex';
 
       let p = 0;
-      const texts = ["Verificando identidad", "Cargando base de datos", "Sincronizando MGA", "Acceso concedido"];
-      
+      const msgs = ["Codificando Sesión", "Abriendo Portal", "Cargando MGA", "Bienvenido"];
       const int = setInterval(() => {
         p += 2;
         bar.style.width = p + "%";
-        if(p == 25) status.textContent = texts[1];
-        if(p == 60) status.textContent = texts[2];
-        if(p == 90) status.textContent = texts[3];
+        if(p == 20) txt.textContent = msgs[0];
+        if(p == 50) txt.textContent = msgs[1];
+        if(p == 80) txt.textContent = msgs[2];
         if(p >= 100) {
           clearInterval(int);
-          setTimeout(initApp, 400);
+          setTimeout(launchApp, 300);
         }
-      }, 35);
+      }, 25);
     }
 
-    function initApp() {
+    function launchApp() {
       document.getElementById('loader').style.display = 'none';
       document.getElementById('main-content').style.display = 'block';
-      document.getElementById('user-display').textContent = sessionStorage.getItem('mga_user');
+      document.getElementById('display-user').textContent = sessionStorage.getItem('mga_user');
+      document.body.style.overflow = 'auto';
     }
 
     function toggleMenu(e) {
@@ -314,7 +315,7 @@
     }
 
     window.onclick = () => document.getElementById('menu-panel').classList.remove('open');
-    if(sessionStorage.getItem('mga_auth')) initApp();
+    if(sessionStorage.getItem('mga_verified')) launchApp();
 
     /* ESTRELLAS ANIMADAS */
     const canvas = document.getElementById('bg-canvas');
@@ -323,11 +324,11 @@
     function setup() {
       canvas.width = window.innerWidth; canvas.height = window.innerHeight;
       stars = [];
-      for(let i=0; i<100; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5, v: Math.random()*0.4});
+      for(let i=0; i<150; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5, v: Math.random()*0.3});
     }
     function draw() {
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = "rgba(255,255,255,0.2)";
+      ctx.fillStyle = "rgba(255,255,255,0.15)";
       stars.forEach(s => {
         ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
         s.y -= s.v; if(s.y < 0) s.y = canvas.height;
