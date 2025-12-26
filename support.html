@@ -29,18 +29,17 @@
 
     .shell { position: relative; z-index: 10; max-width: 900px; margin: 0 auto; padding: 40px 20px; }
 
-    /* --- VOLVER AL PANEL (VUELVE A LAS CARDS) --- */
-    .back-nav { margin-bottom: 30px; }
-    .back-link {
-      display: inline-flex; align-items: center; gap: 8px; color: var(--accent);
-      text-decoration: none; font-size: 14px; font-weight: 700;
-      padding: 12px 20px; background: rgba(100, 180, 255, 0.05);
-      border: 1px solid rgba(100, 180, 255, 0.2); border-radius: 14px; transition: 0.3s;
-      text-transform: uppercase; letter-spacing: 0.5px;
+    /* --- BOTÓN VOLVER --- */
+    .back-nav { margin-bottom: 25px; }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px;
+      background: rgba(255,255,255,0.03); border: var(--border-1); border-radius: 14px;
+      color: var(--text-1); cursor: pointer; font-weight: 700; font-size: 13px;
+      text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;
     }
-    .back-link:hover { background: rgba(100, 180, 255, 0.15); transform: translateX(-5px); box-shadow: 0 0 20px rgba(100, 180, 255, 0.1); }
+    .btn-back:hover { background: rgba(255,255,255,0.08); color: #fff; transform: translateX(-5px); }
 
-    /* --- BARRA DE ESTADO (ID 1 Y 5) --- */
+    /* --- BARRA DE ESTADO --- */
     .status-bar {
       display: flex; justify-content: space-between; align-items: center;
       background: rgba(255,255,255,0.03); border: var(--border-1);
@@ -52,7 +51,7 @@
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.2); } }
 
     /* Header */
-    .support-header { text-align: center; margin-bottom: 50px; }
+    .support-header { text-align: center; margin-bottom: 40px; }
     .support-header h1 {
       font-size: clamp(32px, 6vw, 48px); font-weight: 800; margin: 0;
       background: linear-gradient(135deg, #fff 0%, #64b4ff 100%);
@@ -79,8 +78,7 @@
     }
     .btn-main:hover { background: var(--accent); color: #fff; }
 
-    /* --- ACORDEÓN (ID 2) --- */
-    .faq-section { margin-top: 20px; }
+    /* --- ACORDEÓN --- */
     .faq-title { font-size: 20px; font-weight: 800; margin-bottom: 25px; text-align: center; color: var(--accent); }
     .faq-item {
       background: rgba(255,255,255,0.02); border: var(--border-1);
@@ -98,7 +96,6 @@
     .faq-item.active { background: rgba(255,255,255,0.05); border-color: rgba(100, 180, 255, 0.3); }
     .faq-item.active .faq-answer { max-height: 150px; padding-bottom: 22px; opacity: 1; }
 
-    /* Notificaciones */
     #notif-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; pointer-events: none; width: 320px; }
     .notif {
       background: rgba(15, 20, 28, 0.9); border: 1px solid rgba(100, 180, 255, 0.2);
@@ -108,7 +105,6 @@
     }
     .notif.active { transform: translateX(0); }
 
-    /* Modal */
     .mga-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; backdrop-filter: blur(5px); }
     .modal-box { background: #0f141b; border: 1px solid rgba(255,255,255,0.1); padding: 35px; border-radius: 28px; max-width: 400px; text-align: center; }
 
@@ -122,20 +118,15 @@
 
   <main class="shell">
     <nav class="back-nav">
-      <a href="index.html" class="back-link">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Volver al Panel
-      </a>
+      <button class="btn-back" onclick="window.history.back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        VOLVER
+      </button>
     </nav>
 
     <div class="status-bar">
-      <div class="status-item">
-        <div class="dot"></div>
-        Sistemas MGA: Operativos
-      </div>
-      <div class="status-item" style="color:var(--accent)">
-        TIEMPO DE RESPUESTA: < 1 HORA
-      </div>
+      <div class="status-item"><div class="dot"></div>Sistemas MGA: Operativos</div>
+      <div class="status-item" style="color:var(--accent)">RESPUESTA: < 1 HORA</div>
     </div>
 
     <header class="support-header">
@@ -172,30 +163,21 @@
 
     <section class="faq-section">
       <h3 class="faq-title">Centro de Ayuda Rápida</h3>
-      
       <div class="faq-item">
         <button class="faq-question">¿Cuándo se procesan mis comisiones? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="faq-answer">Las comisiones se liquidan todos los días 5 de cada mes a través del método de pago seleccionado en tu registro.</div>
       </div>
-
-      <div class="faq-item">
-        <button class="faq-question">¿Cómo solicito un cambio de anfitrión? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></button>
-        <div class="faq-answer">Debes abrir un ticket en Soporte Técnico detallando tu situación actual para que un supervisor la evalúe.</div>
-      </div>
-
       <div class="faq-item">
         <button class="faq-question">¿Qué hago si mi usuario aparece suspendido? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="faq-answer">Si ves el mensaje de acceso denegado persistente, contacta a tu anfitrión directo para regularizar tu acceso administrativo.</div>
       </div>
     </section>
 
-    <footer style="margin-top:60px; text-align:center; opacity:0.4; font-size:11px; letter-spacing:1px;">
-      MGA GLOBAL PORTAL © 2025
-    </footer>
+    <footer style="margin-top:60px; text-align:center; opacity:0.4; font-size:11px; letter-spacing:1px;">MGA GLOBAL PORTAL © 2025</footer>
   </main>
 
   <script>
-    // Seguridad: Si no hay login, rebota al index
+    // Seguridad
     if (!sessionStorage.getItem('mga_verified')) { window.location.href = 'index.html'; }
 
     // Acordeón
@@ -208,7 +190,7 @@
       };
     });
 
-    // Modal Detalles
+    // Modal
     document.querySelectorAll('.btn-detail').forEach(btn => {
       btn.onclick = () => {
         const modal = document.createElement('div');
@@ -233,19 +215,6 @@
       requestAnimationFrame(draw);
     }
     window.onresize = setup; setup(); draw();
-
-    // Notificaciones de prueba social
-    const NAMES = ["Maria", "Juan", "Lucas", "Santi", "Delfina", "Franco"];
-    function showNotif() {
-      const container = document.getElementById('notif-container');
-      const div = document.createElement('div');
-      div.className = 'notif';
-      div.innerHTML = `<div style="font-size:20px;">💸</div><div style="font-size:13px;"><b>${NAMES[Math.floor(Math.random()*NAMES.length)]}</b> recibió pago de <b>$145.000</b></div>`;
-      container.appendChild(div);
-      setTimeout(()=>div.classList.add('active'),100);
-      setTimeout(()=>{div.classList.remove('active'); setTimeout(()=>div.remove(),600);}, 5000);
-    }
-    setInterval(showNotif, 18000);
   </script>
 </body>
 </html>
