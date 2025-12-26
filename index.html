@@ -4,261 +4,308 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MGA — Master Grand Agency</title>
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-0: #05070a;
-      --bg-1: #0b0e14;
+      --bg-0: #0b0e12;
+      --bg-1: #0f141b;
       --text-0: #e8eef7;
       --text-1: #b9c3d3;
       --accent: #64b4ff;
       --border-1: 1px solid rgba(255,255,255,0.08);
-      --blur-1: saturate(160%) blur(15px);
-      --ease: cubic-bezier(.16,1,.3,1);
-
-      --card-grad-master: linear-gradient(180deg, rgba(54,90,255,0.2) 0%, rgba(15,20,30,0.9) 100%);
-      --card-grad-setter: linear-gradient(180deg, rgba(0,212,255,0.2) 0%, rgba(15,20,30,0.9) 100%);
-      --card-grad-puestos: linear-gradient(180deg, rgba(185,110,255,0.2) 0%, rgba(15,20,30,0.9) 100%);
-      --card-grad-economia: linear-gradient(180deg, rgba(0,255,163,0.2) 0%, rgba(15,20,30,0.9) 100%);
+      --blur-1: saturate(140%) blur(12px);
+      
+      /* Gradientes Originales */
+      --card-grad-master: linear-gradient(180deg, rgba(54,90,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
+      --card-grad-setter: linear-gradient(180deg, rgba(0,212,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
+      --card-grad-puestos: linear-gradient(180deg, rgba(185,110,255,0.25) 0%, rgba(21,28,45,0.85) 100%);
+      --card-grad-economia: linear-gradient(180deg, rgba(0,255,163,0.25) 0%, rgba(21,28,45,0.85) 100%);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; background: var(--bg-0); color: var(--text-0); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
+    /* FONDO */
+    .bg-stars { position: fixed; inset: 0; z-index: 0; background: radial-gradient(circle at 50% 50%, #161b22 0%, #0b0e12 100%); }
     #bg-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
 
-    /* 1. PANTALLA DE ACCESO */
+    /* 1. LOGIN & LOADER */
     #lock-screen {
       position: fixed; inset: 0; z-index: 9999; background: var(--bg-0);
       display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
     }
-    .logo-mga { margin-bottom: 30px; text-align: center; z-index: 10; }
     .logo-mga h1 {
-      font-size: clamp(35px, 10vw, 55px); font-weight: 900; letter-spacing: 3px; margin: 0;
-      background: linear-gradient(135deg, #fff 0%, #64b4ff 50%, #b96eff 100%);
-      -webkit-background-clip: text; color: transparent;
-      filter: drop-shadow(0 0 15px rgba(100, 180, 255, 0.4));
+      font-size: clamp(40px, 10vw, 60px); font-weight: 900; letter-spacing: -2px; margin: 0;
+      background: linear-gradient(90deg, #fff, var(--accent)); -webkit-background-clip: text; color: transparent;
     }
-
     .login-card {
-      background: rgba(15, 20, 28, 0.7); border: var(--border-1); backdrop-filter: var(--blur-1);
-      padding: 35px; border-radius: 28px; width: 100%; max-width: 400px; z-index: 10;
+      background: rgba(15, 20, 28, 0.8); border: var(--border-1); backdrop-filter: var(--blur-1);
+      padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; z-index: 10; margin-top: 20px;
     }
     .input-group { margin-bottom: 20px; }
     .input-group label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
     .input-group input {
-      width: 100%; padding: 15px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px; color: #fff; outline: none; transition: 0.3s;
+      width: 100%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; color: #fff; outline: none; transition: 0.3s;
     }
     .login-btn {
       width: 100%; padding: 16px; background: #fff; color: #000; border: none;
-      border-radius: 14px; font-weight: 800; cursor: pointer;
+      border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s;
     }
+    #error-msg { color: #ff6b6b; font-size: 13px; text-align: center; margin-top: 15px; display: none; }
 
-    /* LOADER PROFESIONAL */
+    /* LOADER CINEMÁTICO */
     #loader {
       position: fixed; inset: 0; z-index: 10000; background: var(--bg-0);
       display: none; flex-direction: column; align-items: center; justify-content: center;
     }
-    .load-bar { width: 240px; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; margin-top: 20px; }
+    .load-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 20px; position: relative; overflow: hidden; }
     .load-bar-inner { position: absolute; height: 100%; width: 0; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
-    .load-text { font-family: monospace; font-size: 12px; color: var(--accent); letter-spacing: 2px; }
+    .load-text { font-family: monospace; font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; }
 
-    /* 2. CONTENIDO PRINCIPAL */
+    /* 2. CONTENIDO REAL */
     #main-content { display: none; position: relative; z-index: 5; }
-    .shell { max-width: 1200px; margin: 0 auto; padding: 20px 20px 80px; }
+    .shell { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
 
-    /* MENU */
-    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; padding: 20px 0; }
-    .menu-container { position: relative; }
+    /* MENU PROFESIONAL */
+    .topbar { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+    .menu { position: relative; }
     .menu-btn {
-      background: rgba(255,255,255,0.05); border: var(--border-1); color: #fff;
-      padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 700;
+      display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+      background: rgba(24,32,44,0.6); border: var(--border-1); border-radius: 14px;
+      color: #fff; cursor: pointer; backdrop-filter: var(--blur-1); font-weight: 700;
     }
-    .menu-dropdown {
-      position: absolute; top: 110%; left: 0; width: 200px; background: #0f141b;
-      border: var(--border-1); border-radius: 14px; padding: 8px; display: none; z-index: 1000;
+    .menu-panel {
+      position: absolute; top: calc(100% + 10px); left: 0; width: 220px;
+      background: rgba(18,24,33,0.95); border: var(--border-1); border-radius: 16px;
+      padding: 10px; backdrop-filter: var(--blur-1); display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    .menu-dropdown.open { display: block; }
-    .menu-item { display: block; padding: 12px; color: var(--text-1); text-decoration: none; border-radius: 8px; font-size: 14px; }
+    .menu-panel.open { display: block; animation: menuFade 0.2s ease; }
+    @keyframes menuFade { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .menu-item {
+      display: flex; align-items: center; gap: 10px; padding: 12px;
+      color: var(--text-1); text-decoration: none; border-radius: 10px; font-size: 14px;
+    }
     .menu-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
 
-    /* CARDS ESTILO ORIGINAL */
-    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+    /* CARDS ORIGINALES */
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
     .card {
-      grid-column: span 12; background: var(--bg-1); border: var(--border-1); border-radius: 20px;
-      padding: 30px; position: relative; overflow: hidden; transition: 0.3s var(--ease);
-      display: flex; flex-direction: column; align-items: center; text-align: center;
+      grid-column: span 12; position: relative; border-radius: 20px; border: var(--border-1);
+      padding: 30px; overflow: hidden; transition: 0.3s cubic-bezier(.16,1,.3,1);
     }
-    .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+    .card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
     
     .card.master { background: var(--card-grad-master); }
     .card.setter { background: var(--card-grad-setter); }
     .card.puestos { background: var(--card-grad-puestos); }
     .card.economia { background: var(--card-grad-economia); }
 
-    .card-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
-    .card h3 { font-size: 22px; margin: 0 0 10px; font-weight: 800; }
-    .card p { color: var(--text-1); font-size: 14px; line-height: 1.5; margin: 0 0 20px; }
+    .card-content { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+    .card-title { font-size: 24px; font-weight: 800; margin: 0 0 10px; }
+    .card-desc { color: var(--text-1); font-size: 15px; line-height: 1.6; margin: 0; max-width: 80%; }
     
-    .card-btn {
-      background: #fff; color: #000; padding: 10px 24px; border-radius: 10px;
-      text-decoration: none; font-weight: 700; font-size: 14px; transition: 0.2s;
+    .card-icon {
+      width: 54px; height: 54px; background: rgba(255,255,255,0.06); border: var(--border-1);
+      border-radius: 14px; display: grid; place-items: center; flex-shrink: 0;
     }
-    .card-btn:hover { background: var(--accent); transform: scale(1.05); }
+    .card-icon svg { width: 28px; height: 28px; }
+
+    .card-meta { margin-top: 25px; display: flex; align-items: center; gap: 12px; }
+    .pill { padding: 8px 14px; background: rgba(255,255,255,0.06); border-radius: 99px; font-size: 12px; color: var(--text-1); border: var(--border-1); }
+    .ghost-btn {
+      display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+      background: #fff; color: #000; border-radius: 12px; font-weight: 700;
+      text-decoration: none; font-size: 13px; transition: 0.2s;
+    }
+    .ghost-btn:hover { transform: scale(1.05); }
 
     @media (min-width: 768px) { .card { grid-column: span 6; } .card.master { grid-column: span 12; } }
-
-    #error-msg { color: #ff6b6b; font-size: 13px; margin-top: 15px; text-align: center; display: none; }
   </style>
 </head>
 <body>
 
+  <div class="bg-stars"></div>
   <canvas id="bg-canvas"></canvas>
 
   <div id="loader">
-    <div class="load-text" id="status-text">INICIANDO PROTOCOLOS...</div>
-    <div class="load-bar">
-      <div class="load-bar-inner" id="load-inner"></div>
-    </div>
+    <div class="load-text" id="load-status">Iniciando Sistemas</div>
+    <div class="load-bar"><div class="load-bar-inner" id="bar-inner"></div></div>
   </div>
 
   <div id="lock-screen">
-    <div class="logo-mga">
-      <h1>MGA</h1>
-      <span style="letter-spacing: 5px; color: var(--text-1); font-size: 10px; text-transform: uppercase;">Master Grand Agency</span>
-    </div>
+    <div class="logo-mga"><h1>MGA</h1></div>
     <div class="login-card">
       <div class="input-group">
-        <label>Usuario</label>
-        <input type="text" id="user-input" placeholder="Nombre de usuario" autocomplete="off">
+        <label>Usuario del Equipo</label>
+        <input type="text" id="user-in" placeholder="Tu usuario" autocomplete="off">
       </div>
       <div class="input-group">
-        <label>Llave Maestra</label>
-        <input type="password" id="pass-input" placeholder="••••">
+        <label>Contraseña</label>
+        <input type="password" id="pass-in" placeholder="••••••••">
       </div>
-      <button class="login-btn" onclick="startAuth()">ENTRAR AL PANEL</button>
-      <p id="error-msg">Acceso denegado</p>
+      <button class="login-btn" onclick="tryLogin()">ACCEDER AL PANEL</button>
+      <div id="error-msg">Credenciales Inválidas</div>
     </div>
   </div>
 
   <div id="main-content">
     <main class="shell">
       <div class="topbar">
-        <div class="menu-container">
-          <button class="menu-btn" onclick="toggleMenu(event)">Menú</button>
-          <div class="menu-dropdown" id="dropdown">
-            <a href="index.html" class="menu-item">Inicio</a>
-            <a href="support.html" class="menu-item">Soporte Técnico</a>
-            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05);">
-            <a href="#" class="menu-item" onclick="logout()" style="color:#ff6b6b;">Cerrar Sesión</a>
+        <div class="menu">
+          <button class="menu-btn" onclick="toggleMenu(event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            Menú
+          </button>
+          <div class="menu-panel" id="menu-panel">
+            <a href="index.html" class="menu-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              Inicio
+            </a>
+            <a href="support.html" class="menu-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Soporte
+            </a>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
+            <a href="#" class="menu-item" onclick="logout()" style="color:#ff6b6b;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+              Cerrar Sesión
+            </a>
           </div>
         </div>
-        <div style="font-weight: 800; letter-spacing: 1px; color: var(--accent);">MGA CENTRAL</div>
       </div>
 
       <header style="margin-bottom: 40px;">
-        <h2 style="font-size: 32px; font-weight: 800; margin:0;">Bienvenido, <span id="user-tag" style="color:var(--accent);"></span></h2>
-        <p style="color:var(--text-1);">Has accedido al centro operativo de alto rendimiento.</p>
+        <h1 style="font-size: clamp(24px, 5vw, 42px); font-weight: 800; margin:0;">Bienvenido, <span id="user-display" style="color:var(--accent);"></span></h1>
+        <p style="color:var(--text-1); margin-top:10px;">Sector operativo de Master Grand Agency.</p>
       </header>
 
       <section class="grid">
-        <div class="card master">
-          <div class="card-icon">💎</div>
-          <h3>MASTER GRAND</h3>
-          <p>Estrategias avanzadas para escalar resultados a nivel experto.</p>
-          <a href="master.html" class="card-btn">INGRESAR</a>
-        </div>
+        <article class="card master">
+          <div class="card-content">
+            <div>
+              <h2 class="card-title">MASTER GRAND</h2>
+              <p class="card-desc">Ambiente de conocimiento diseñado para escalar a más de $1,000 USD garantizados.</p>
+            </div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#9ec7ff" stroke-width="2"><path d="M3 18h18l-2-9-5 3-4-6-5 6-2 6Z"/></svg>
+            </div>
+          </div>
+          <div class="card-meta">
+            <span class="pill">Programa Pro</span>
+            <a href="master.html" class="ghost-btn">INGRESAR</a>
+          </div>
+        </article>
 
-        <div class="card setter">
-          <div class="card-icon">🚀</div>
-          <h3>SETTER PROFESIÓN</h3>
-          <p>Domina la prospección y gestión de agendas para la agencia.</p>
-          <a href="setter.html" class="card-btn">INGRESAR</a>
-        </div>
+        <article class="card setter">
+          <div class="card-content">
+            <div>
+              <h2 class="card-title">SETTER PROFESIÓN</h2>
+              <p class="card-desc">Habilidades de setting para generar más de $2,000 USD mensuales.</p>
+            </div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#9ef1ff" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#9ef1ff" fill-opacity="0.3"/></svg>
+            </div>
+          </div>
+          <div class="card-meta">
+            <span class="pill">Habilidad Clave</span>
+            <a href="setter.html" class="ghost-btn">INGRESAR</a>
+          </div>
+        </article>
 
-        <div class="card puestos">
-          <div class="card-icon">💼</div>
-          <h3>PUESTOS LABORALES</h3>
-          <p>Vacantes abiertas y oportunidades de crecimiento interno.</p>
-          <a href="laboral.html" class="card-btn">INGRESAR</a>
-        </div>
+        <article class="card puestos">
+          <div class="card-content">
+            <div>
+              <h2 class="card-title">PUESTOS LABORALES</h2>
+              <p class="card-desc">Explora los +27 roles disponibles en el ecosistema de MGA.</p>
+            </div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#d8b3ff" stroke-width="2"><path d="M9 6h6l1 2h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3l1-2Z"/></svg>
+            </div>
+          </div>
+          <div class="card-meta">
+            <span class="pill">Oportunidades</span>
+            <a href="laboral.html" class="ghost-btn">INGRESAR</a>
+          </div>
+        </article>
 
-        <div class="card economia">
-          <div class="card-icon">📈</div>
-          <h3>SOPORTE Y GESTIÓN</h3>
-          <p>Atención técnica y carga oficial de prospectos.</p>
-          <a href="support.html" class="card-btn">INGRESAR</a>
-        </div>
+        <article class="card economia">
+          <div class="card-content">
+            <div>
+              <h2 class="card-title">SISTEMA DE ECONOMÍA</h2>
+              <p class="card-desc">Método de prospección profesional para maximizar beneficios.</p>
+            </div>
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#8fffd6" stroke-width="2"><circle cx="12" cy="12" r="6"/><path d="M3 12c3-4 18-4 21 0-3 4-18 4-21 0Z"/></svg>
+            </div>
+          </div>
+          <div class="card-meta">
+            <span class="pill">Estrategia</span>
+            <a href="support.html" class="ghost-btn">INGRESAR</a>
+          </div>
+        </article>
       </section>
     </main>
   </div>
 
   <script>
+    /* CREDENCIALES (Añade aquí con coma al final de cada línea) */
     const CREDENCIALES = {
       "admin": "mga123",
       "maiten": "mga",
       "agus": "123455",
-      "maiten": "sociamga"
+      "invitado": "mga2025"
     };
 
-    function startAuth() {
-      const u = document.getElementById('user-input').value.trim().toLowerCase();
-      const p = document.getElementById('pass-input').value.trim();
+    function tryLogin() {
+      const u = document.getElementById('user-in').value.trim().toLowerCase();
+      const p = document.getElementById('pass-in').value.trim();
       const err = document.getElementById('error-msg');
 
       if (CREDENCIALES[u] && CREDENCIALES[u] === p) {
-        sessionStorage.setItem('mga_verified', 'true');
-        sessionStorage.setItem('mga_name', u);
-        runProfessionalLoader();
+        sessionStorage.setItem('mga_auth', 'true');
+        sessionStorage.setItem('mga_user', u);
+        runLoader();
       } else {
         err.style.display = 'block';
-        setTimeout(() => err.style.display = 'none', 2000);
+        setTimeout(() => err.style.display = 'none', 2500);
       }
     }
 
-    function runProfessionalLoader() {
-      const lock = document.getElementById('lock-screen');
+    function runLoader() {
+      document.getElementById('lock-screen').style.display = 'none';
       const loader = document.getElementById('loader');
-      const bar = document.getElementById('load-inner');
-      const status = document.getElementById('status-text');
-      
-      lock.style.display = 'none';
+      const bar = document.getElementById('bar-inner');
+      const status = document.getElementById('load-status');
       loader.style.display = 'flex';
 
-      const steps = ["AUTENTICANDO...", "VERIFICANDO CREDENCIALES...", "DESBLOQUEANDO ENTORNO...", "ACCESO CONCEDIDO"];
-      let progress = 0;
-      let stepIdx = 0;
-
-      const interval = setInterval(() => {
-        progress += 2;
-        bar.style.width = progress + "%";
-        
-        if (progress % 25 === 0) {
-          status.textContent = steps[stepIdx];
-          stepIdx++;
+      let p = 0;
+      const texts = ["Verificando identidad", "Cargando base de datos", "Sincronizando MGA", "Acceso concedido"];
+      
+      const int = setInterval(() => {
+        p += 2;
+        bar.style.width = p + "%";
+        if(p == 25) status.textContent = texts[1];
+        if(p == 60) status.textContent = texts[2];
+        if(p == 90) status.textContent = texts[3];
+        if(p >= 100) {
+          clearInterval(int);
+          setTimeout(initApp, 400);
         }
-
-        if (progress >= 100) {
-          clearInterval(interval);
-          setTimeout(showContent, 500);
-        }
-      }, 40);
+      }, 35);
     }
 
-    function showContent() {
+    function initApp() {
       document.getElementById('loader').style.display = 'none';
       document.getElementById('main-content').style.display = 'block';
-      document.getElementById('user-tag').textContent = sessionStorage.getItem('mga_name');
-      document.body.style.overflow = 'auto';
+      document.getElementById('user-display').textContent = sessionStorage.getItem('mga_user');
     }
 
     function toggleMenu(e) {
       e.stopPropagation();
-      document.getElementById('dropdown').classList.toggle('open');
+      document.getElementById('menu-panel').classList.toggle('open');
     }
 
     function logout() {
@@ -266,24 +313,28 @@
       window.location.reload();
     }
 
-    window.onclick = () => document.getElementById('dropdown').classList.remove('open');
-    if (sessionStorage.getItem('mga_verified') === 'true') showContent();
+    window.onclick = () => document.getElementById('menu-panel').classList.remove('open');
+    if(sessionStorage.getItem('mga_auth')) initApp();
 
-    /* ESTRELLAS */
+    /* ESTRELLAS ANIMADAS */
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
-    function init() {
+    function setup() {
       canvas.width = window.innerWidth; canvas.height = window.innerHeight;
       stars = [];
-      for(let i=0; i<150; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5, v: Math.random()*0.3 + 0.1 });
+      for(let i=0; i<100; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.5, v: Math.random()*0.4});
     }
-    function anim() {
-      ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(255,255,255,0.3)";
-      stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill(); s.y -= s.v; if(s.y < 0) s.y = canvas.height; });
-      requestAnimationFrame(anim);
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "rgba(255,255,255,0.2)";
+      stars.forEach(s => {
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill();
+        s.y -= s.v; if(s.y < 0) s.y = canvas.height;
+      });
+      requestAnimationFrame(draw);
     }
-    window.onresize = init; init(); anim();
+    window.onresize = setup; setup(); draw();
   </script>
 </body>
 </html>
