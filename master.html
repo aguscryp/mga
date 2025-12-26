@@ -17,6 +17,7 @@
       --accent: #64b4ff;
       --success: #00ffaa;
       --border-1: 1px solid rgba(255,255,255,0.08);
+      --blur-1: saturate(160%) blur(15px);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -25,21 +26,23 @@
     #bg-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
     .shell { position: relative; z-index: 10; max-width: 900px; margin: 0 auto; padding: 40px 20px; }
 
-    /* --- NAVEGACIÓN Y PROGRESO --- */
-    .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
-    
+    /* --- BOTÓN VOLVER (IGUAL A SUPPORT) --- */
+    .back-nav { margin-bottom: 25px; }
     .btn-back {
       display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px;
       background: rgba(255,255,255,0.03); border: var(--border-1); border-radius: 14px;
       color: var(--text-1); cursor: pointer; font-weight: 700; font-size: 13px;
-      text-transform: uppercase; text-decoration: none; transition: 0.3s;
+      text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s;
+      text-decoration: none;
     }
     .btn-back:hover { background: rgba(255,255,255,0.08); color: #fff; transform: translateX(-5px); }
 
-    .progress-container { flex-grow: 1; max-width: 300px; text-align: right; }
-    .progress-text { font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+    /* --- BARRA DE PROGRESO --- */
+    .progress-section { margin-bottom: 40px; }
+    .progress-info { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
+    .progress-text { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
     .progress-bar-bg { height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
-    #progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+    #progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: 0.8s ease; }
 
     .header h1 {
       font-size: clamp(32px, 5vw, 42px); font-weight: 800; margin: 0;
@@ -47,47 +50,48 @@
       -webkit-background-clip: text; color: transparent;
     }
 
-    /* FEED DE VIDEOS */
-    #video-feed { display: flex; flex-direction: column; gap: 40px; margin-top: 40px; }
+    /* --- FEED DE VIDEOS --- */
+    #video-feed { display: flex; flex-direction: column; gap: 45px; margin-top: 40px; }
 
-    .class-card {
-      background: var(--card-bg); border: var(--border-1); border-radius: 28px;
-      overflow: hidden; transition: 0.4s ease;
+    .class-card { background: var(--card-bg); border: var(--border-1); border-radius: 28px; overflow: hidden; transition: 0.4s ease; }
+    .class-card.completed { border-color: var(--success); }
+
+    /* --- CAPTION MGA (PORTADA) --- */
+    .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; cursor: pointer; }
+    .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    
+    .video-caption {
+      position: absolute; inset: 0; z-index: 5;
+      background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover; background-position: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: 0.5s;
     }
-    .class-card.completed { border-color: var(--success); opacity: 0.8; }
-
-    .video-container { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
-    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    .video-caption.hidden { opacity: 0; pointer-events: none; }
+    .caption-text { font-size: 38px; font-weight: 900; color: #fff; letter-spacing: -1px; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .play-btn { 
+        width: 60px; height: 60px; background: #fff; border-radius: 50%; 
+        display: flex; align-items: center; justify-content: center; margin-top: 15px;
+        box-shadow: 0 0 30px rgba(255,255,255,0.2);
+    }
 
     .class-info { padding: 30px; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
     .info-text { flex-grow: 1; }
     .class-info h2 { margin: 0 0 10px; font-size: 22px; font-weight: 800; color: #fff; }
     .class-info p { margin: 0; color: var(--text-1); font-size: 15px; line-height: 1.6; }
 
-    /* BOTÓN COMPLETAR */
     .btn-complete {
       padding: 12px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1);
       background: none; color: var(--text-1); cursor: pointer; transition: 0.3s;
       display: flex; align-items: center; justify-content: center; min-width: 48px; height: 48px;
     }
-    .btn-complete:hover { border-color: var(--accent); color: var(--accent); }
     .btn-complete.active { background: var(--success); border-color: var(--success); color: #000; }
 
-    .badge {
-      display: inline-block; padding: 5px 10px; background: rgba(100, 180, 255, 0.1);
-      color: var(--accent); border-radius: 8px; font-size: 10px; font-weight: 800;
-      text-transform: uppercase; margin-bottom: 15px;
-    }
+    .badge { display: inline-block; padding: 5px 10px; background: rgba(100, 180, 255, 0.1); color: var(--accent); border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; }
 
-    footer { margin: 80px 0 40px; text-align: center; opacity: 0.2; font-size: 11px; }
+    footer { margin: 60px 0 40px; text-align: center; opacity: 0.2; font-size: 11px; }
 
-    @media (max-width: 650px) {
-      .nav-header { flex-direction: column; align-items: flex-start; }
-      .progress-container { max-width: 100%; width: 100%; text-align: left; }
-      .class-info { flex-direction: column; }
-      .btn-complete { width: 100%; border-radius: 12px; gap: 10px; }
-      .btn-complete::after { content: 'Marcar como vista'; font-weight: 700; font-size: 12px; }
-    }
+    @media (max-width: 650px) { .class-info { flex-direction: column; } .btn-complete { width: 100%; border-radius: 12px; } }
   </style>
 </head>
 <body>
@@ -95,20 +99,23 @@
   <canvas id="bg-canvas"></canvas>
 
   <main class="shell">
-    <div class="nav-header">
-      <a href="index.html" class="btn-back">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        VOLVER AL PANEL
-      </a>
-      <div class="progress-container">
-        <div class="progress-text">Tu Progreso: <span id="progress-val">0</span>%</div>
-        <div class="progress-bar-bg"><div id="progress-fill"></div></div>
+    <nav class="back-nav">
+      <button class="btn-back" onclick="window.history.back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        VOLVER
+      </button>
+    </nav>
+
+    <div class="progress-section">
+      <div class="progress-info">
+        <div class="progress-text">Progreso Académico: <span id="progress-val">0</span>%</div>
       </div>
+      <div class="progress-bar-bg"><div id="progress-fill"></div></div>
     </div>
 
     <header class="header">
       <h1>Master Classes MGA</h1>
-      <p style="color: var(--text-1)">Formación estratégica para setters de élite.</p>
+      <p style="color: var(--text-1)">Acceso exclusivo a capacitaciones de alto impacto.</p>
     </header>
 
     <div id="video-feed"></div>
@@ -117,7 +124,6 @@
   </main>
 
   <script>
-    // --- LISTA DE CLASES ---
     const CLASES_MGA = [
       {
         id: "clase_01",
@@ -125,24 +131,12 @@
         link: "https://drive.google.com/file/d/1INoY9FamILYebME-lsFJ4HzKZiLWaLNM/preview",
         descripcion: "Te explico a brevedad como ser un setter en 2025 desde tu celular.",
         categoria: "Iniciación"
-      },
-        
-      // Puedes agregar más clases aquí copiando el formato...
-       {
-        id: "clase_02",
-        titulo: "Como ser un setter en 2025",
-        link: "https://drive.google.com/file/d/1INoY9FamILYebME-lsFJ4HzKZiLWaLNM/preview",
-        descripcion: "Te explico a brevedad como ser un setter en 2025 desde tu celular.",
-        categoria: "Iniciación"
-      },
+      }
     ];
 
-    // Seguridad
     if (!sessionStorage.getItem('mga_verified')) { window.location.href = 'index.html'; }
 
-    // Cargar progreso guardado
     let completedIds = JSON.parse(localStorage.getItem('mga_progress') || "[]");
-
     const feed = document.getElementById('video-feed');
     
     function renderClasses() {
@@ -152,7 +146,11 @@
         const card = document.createElement('article');
         card.className = `class-card ${isDone ? 'completed' : ''}`;
         card.innerHTML = `
-          <div class="video-container">
+          <div class="video-wrapper" onclick="playVideo(this)">
+            <div class="video-caption">
+              <div class="caption-text">Caption MGA</div>
+              <div class="play-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg></div>
+            </div>
             <iframe src="${clase.link}" allow="autoplay" allowfullscreen></iframe>
           </div>
           <div class="class-info">
@@ -162,13 +160,18 @@
               <p>${clase.descripcion}</p>
             </div>
             <button class="btn-complete ${isDone ? 'active' : ''}" onclick="toggleComplete('${clase.id}')">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
             </button>
           </div>
         `;
         feed.appendChild(card);
       });
       updateProgressBar();
+    }
+
+    function playVideo(wrapper) {
+      const caption = wrapper.querySelector('.video-caption');
+      caption.classList.add('hidden');
     }
 
     function toggleComplete(id) {
@@ -184,12 +187,11 @@
     function updateProgressBar() {
       const total = CLASES_MGA.length;
       const done = completedIds.filter(id => CLASES_MGA.find(c => c.id === id)).length;
-      const percentage = Math.round((done / total) * 100);
+      const percentage = Math.round((done / total) * 100) || 0;
       document.getElementById('progress-fill').style.width = percentage + '%';
       document.getElementById('progress-val').innerText = percentage;
     }
 
-    // Fondo Animado
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
