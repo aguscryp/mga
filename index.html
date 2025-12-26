@@ -128,12 +128,33 @@
 
     #error-msg { color: #ff6b6b; font-size: 14px; margin-top: 15px; text-align: center; display: none; font-weight: 600; }
 
+    /* --- SISTEMA DE NOTIFICACIONES --- */
+    #notif-container {
+      position: fixed; bottom: 20px; left: 20px; z-index: 1000;
+      pointer-events: none; width: 320px;
+    }
+    .notif {
+      background: rgba(15, 20, 28, 0.85); border: 1px solid rgba(100, 180, 255, 0.3);
+      backdrop-filter: blur(10px); padding: 15px; border-radius: 16px;
+      display: flex; align-items: center; gap: 12px; margin-top: 10px;
+      transform: translateX(-120%); transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .notif.active { transform: translateX(0); }
+    .notif-icon { width: 35px; height: 35px; background: rgba(100, 180, 255, 0.2); border-radius: 50%; display: grid; place-items: center; color: var(--accent); }
+    .notif-body { font-size: 13px; color: #fff; line-height: 1.4; }
+    .notif-body b { color: var(--accent); }
+    .notif-time { font-size: 10px; color: var(--text-1); display: block; margin-top: 3px; }
+
+    @media (max-width: 500px) { #notif-container { width: calc(100% - 40px); } }
     @media (min-width: 768px) { .card { grid-column: span 6; } .card.master { grid-column: span 12; } }
   </style>
 </head>
 <body>
 
   <canvas id="bg-canvas"></canvas>
+
+  <div id="notif-container"></div>
 
   <div id="loader">
     <div class="load-text" id="status-txt">Sincronizando Identidad</div>
@@ -252,30 +273,19 @@
     /* -----------------------------------------------------------
        CONFIGURACIÓN DE USUARIOS
     ----------------------------------------------------------- */
-    
-    // USUARIOS ACTIVOS
-    const DATABASE = {
-      "maiten": "sociamga",
-      "agus771": "mga"
-    };
-
-    // USUARIOS SUSPENDIDOS
-    const SUSPENDIDOS = [
-      "admin"
-    ];
+    const DATABASE = { "maiten": "mga", "agus": "123455", "maria234": "mga" };
+    const SUSPENDIDOS = ["admin", "usuario_ejemplo"];
 
     function checkAuth() {
       const u = document.getElementById('u-in').value.trim().toLowerCase();
       const p = document.getElementById('p-in').value.trim();
       const err = document.getElementById('error-msg');
 
-      // 1. Validar si está en la lista de suspendidos
       if (SUSPENDIDOS.includes(u)) {
-        alert("Tu usuario esta suspendido por motivos serios administrativos , porfavor para revivir tu usuario tienes que contactarte nuevamente con tu anfitrion enlazado a MGA. ¡Nos vemos pronto!");
+        alert("Tu usuario esta suspendido por motivos serios administrativos...");
         return;
       }
 
-      // 2. Validar credenciales
       if (DATABASE[u] && DATABASE[u] === p) {
         sessionStorage.setItem('mga_verified', 'true');
         sessionStorage.setItem('mga_user', u);
@@ -287,7 +297,48 @@
     }
 
     /* -----------------------------------------------------------
-       LÓGICA DE INTERFAZ Y ANIMACIONES
+       SISTEMA DE NOTIFICACIONES INFINITAS
+    ----------------------------------------------------------- */
+    const NOTIF_DATA = [
+      { name: "Maria", action: "cerró una venta de", amount: "$143,000 pesos" },
+      { name: "Juan", action: "recibió su pago de", amount: "500k por Settear" },
+      { name: "Lucas", action: "concretó un pago de", amount: "$85,000 pesos" },
+      { name: "Santi", action: "acaba de cobrar", amount: "$1.2M de comisión" },
+      { name: "Elena", action: "subió a nivel", amount: "Setter Elite" },
+      { name: "Franco", action: "cerró su 3er venta de", amount: "$210,000 pesos" },
+      { name: "Agustina", action: "recibió bono de", amount: "$45,000 pesos" }
+    ];
+
+    function showNotification() {
+      const container = document.getElementById('notif-container');
+      const item = NOTIF_DATA[Math.floor(Math.random() * NOTIF_DATA.length)];
+      
+      const div = document.createElement('div');
+      div.className = 'notif';
+      div.innerHTML = `
+        <div class="notif-icon">💸</div>
+        <div class="notif-body">
+          <b>${item.name}</b> ${item.action} <b>${item.amount}</b>
+          <span class="notif-time">hace unos segundos</span>
+        </div>
+      `;
+      
+      container.appendChild(div);
+      setTimeout(() => div.classList.add('active'), 100);
+
+      // Eliminar después de 6 segundos
+      setTimeout(() => {
+        div.classList.remove('active');
+        setTimeout(() => div.remove(), 500);
+      }, 6000);
+    }
+
+    // Iniciar bucle de notificaciones (Cada 10 segundos)
+    setInterval(showNotification, 10000);
+    setTimeout(showNotification, 3000); // Primera después de 3 seg.
+
+    /* -----------------------------------------------------------
+       LÓGICA DE INTERFAZ
     ----------------------------------------------------------- */
     function startLoader() {
       document.getElementById('lock-screen').style.display = 'none';
@@ -297,17 +348,9 @@
       loader.style.display = 'flex';
 
       let p = 0;
-      const msgs = ["Codificando Sesión", "Abriendo Portal", "Cargando MGA", "Bienvenido"];
       const int = setInterval(() => {
-        p += 2;
-        bar.style.width = p + "%";
-        if(p == 20) txt.textContent = msgs[0];
-        if(p == 50) txt.textContent = msgs[1];
-        if(p == 80) txt.textContent = msgs[2];
-        if(p >= 100) {
-          clearInterval(int);
-          setTimeout(launchApp, 300);
-        }
+        p += 2; bar.style.width = p + "%";
+        if(p >= 100) { clearInterval(int); setTimeout(launchApp, 300); }
       }, 25);
     }
 
@@ -318,16 +361,8 @@
       document.body.style.overflow = 'auto';
     }
 
-    function toggleMenu(e) {
-      e.stopPropagation();
-      document.getElementById('menu-panel').classList.toggle('open');
-    }
-
-    function logout() {
-      sessionStorage.clear();
-      window.location.reload();
-    }
-
+    function toggleMenu(e) { e.stopPropagation(); document.getElementById('menu-panel').classList.toggle('open'); }
+    function logout() { sessionStorage.clear(); window.location.reload(); }
     window.onclick = () => document.getElementById('menu-panel').classList.remove('open');
     if(sessionStorage.getItem('mga_verified')) launchApp();
 
